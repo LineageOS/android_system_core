@@ -339,7 +339,6 @@ static BatteryMonitor::PowerSupplyType readRawPowerSupplyType(const String8& pat
 
     auto ret = mapSysfsString(buf.c_str(), supplyTypeMap);
     if (!ret) {
-        KLOG_WARNING(LOG_TAG, "Unknown power supply type '%s'\n", buf.c_str());
         *ret = BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_UNKNOWN;
     }
 
@@ -558,6 +557,33 @@ void BatteryMonitor::updateValues(void) {
     }
 
     double MaxPower = 0;
+
+    // Rescan for the available charger types
+    std::unique_ptr<DIR, decltype(&closedir)> dir(opendir(POWER_SUPPLY_SYSFS_PATH), closedir);
+    if (dir == NULL) {
+        KLOG_ERROR(LOG_TAG, "Could not open %s\n", POWER_SUPPLY_SYSFS_PATH);
+    } else {
+        struct dirent* entry;
+        String8 path;
+
+        while ((entry = readdir(dir.get()))) {
+            const char* name = entry->d_name;
+
+
+            if (!strcmp(name, ".") || !strcmp(name, ".."))
+                continue;
+
+            const PowerSupplyType ty = readPowerSupplyType(path, name);
+
+            // Handle device if it's a charger, otherwise do nothing.
+            updateChargerPresence(name, ty);
+
+            // If it's a battery, get whatever battery information is available from it.
+            if (ty == ANDROID_POWER_SUPPLY_TYPE_BATTERY) {
+                initWithBatteryDevice(name);
+            }
+        }
+    }
 
     for (const auto& chargerName : mChargerNames) {
         String8 path;
