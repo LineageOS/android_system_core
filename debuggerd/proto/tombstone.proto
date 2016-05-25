@@ -49,6 +49,7 @@ message StackHistoryBuffer {
 message Tombstone {
   Architecture arch = 1;
   Architecture guest_arch = 24;
+  string lineage_version = 1000;
   string build_fingerprint = 2;
   string revision = 3;
   string timestamp = 4;
