@@ -211,6 +211,7 @@ bool ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
         CheckFlag("overlayfs_remove_missing_lowerdir", overlayfs_remove_missing_lowerdir);
         CheckFlag("overlay=on", overlay_on);
         CheckFlag("overlay=off", overlay_off);
+        CheckFlag("wrappedkey", wrapped_key);
 
 #undef CheckFlag
 
