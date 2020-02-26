@@ -156,6 +156,46 @@ static struct SsFuncDesc ss_descriptors = {
                 },
 };
 
+static struct FuncDesc fs_descriptors_v1 = {
+        .intf = fastboot_interface,
+        .source =
+                {
+                        .bLength = sizeof(fs_descriptors_v1.source),
+                        .bDescriptorType = USB_DT_ENDPOINT,
+                        .bEndpointAddress = 1 | USB_DIR_OUT,
+                        .bmAttributes = USB_ENDPOINT_XFER_BULK,
+                        .wMaxPacketSize = kMaxPacketSizeFs,
+                },
+        .sink =
+                {
+                        .bLength = sizeof(fs_descriptors_v1.sink),
+                        .bDescriptorType = USB_DT_ENDPOINT,
+                        .bEndpointAddress = 2 | USB_DIR_IN,
+                        .bmAttributes = USB_ENDPOINT_XFER_BULK,
+                        .wMaxPacketSize = kMaxPacketSizeFs,
+                },
+};
+
+static struct FuncDesc hs_descriptors_v1 = {
+        .intf = fastboot_interface,
+        .source =
+                {
+                        .bLength = sizeof(hs_descriptors_v1.source),
+                        .bDescriptorType = USB_DT_ENDPOINT,
+                        .bEndpointAddress = 1 | USB_DIR_OUT,
+                        .bmAttributes = USB_ENDPOINT_XFER_BULK,
+                        .wMaxPacketSize = kMaxPacketSizeHs,
+                },
+        .sink =
+                {
+                        .bLength = sizeof(hs_descriptors_v1.sink),
+                        .bDescriptorType = USB_DT_ENDPOINT,
+                        .bEndpointAddress = 2 | USB_DIR_IN,
+                        .bmAttributes = USB_ENDPOINT_XFER_BULK,
+                        .wMaxPacketSize = kMaxPacketSizeHs,
+                },
+};
+
 #define STR_INTERFACE_ "fastbootd"
 
 static const struct {
@@ -186,8 +226,8 @@ static struct DescV1 v1_descriptor = {
             .fs_count = 3,
             .hs_count = 3,
         },
-        .fs_descs = fs_descriptors,
-        .hs_descs = hs_descriptors,
+        .fs_descs = fs_descriptors_v1,
+        .hs_descs = hs_descriptors_v1,
 };
 
 static struct DescV2 v2_descriptor = {
@@ -226,7 +266,7 @@ static bool InitFunctionFs(usb_handle* h) {
 
         auto ret = write(h->control.get(), &v2_descriptor, sizeof(v2_descriptor));
         if (ret < 0) {
-            // fallback to v1 descriptor
+            // fallback to v1 descriptor, with different endpoint addresses for source and sink
             ret = write(h->control.get(), &v1_descriptor, sizeof(v1_descriptor));
             if (ret < 0) {
                 PLOG(ERROR) << "cannot write descriptors " << kUsbFfsFastbootEp0;

@@ -195,7 +195,7 @@ std::vector<std::string> ListPartitions(FastbootDevice* device) {
 }
 
 bool GetDeviceLockStatus() {
-    return android::base::GetProperty("ro.boot.verifiedbootstate", "") != "orange";
+    return android::base::GetProperty("ro.boot.verifiedbootstate", "") == "green";
 }
 
 bool UpdateAllPartitionMetadata(FastbootDevice* device, const std::string& super_name,
