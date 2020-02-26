@@ -53,6 +53,16 @@ struct SsFuncDesc {
     struct usb_ss_ep_comp_descriptor sink_comp;
 } __attribute__((packed));
 
+struct DescV1 {
+    struct usb_functionfs_descs_head_v1 {
+        __le32 magic;
+        __le32 length;
+        __le32 fs_count;
+        __le32 hs_count;
+    } __attribute__((packed)) header;
+    struct FuncDesc fs_descs, hs_descs;
+} __attribute__((packed));
+
 struct DescV2 {
     struct usb_functionfs_descs_head_v2 header;
     // The rest of the structure depends on the flags in the header.
@@ -169,6 +179,17 @@ static const struct {
                 },
 };
 
+static struct DescV1 v1_descriptor = {
+        .header = {
+            .magic = htole32(FUNCTIONFS_DESCRIPTORS_MAGIC),
+            .length = htole32(sizeof(v1_descriptor)),
+            .fs_count = 3,
+            .hs_count = 3,
+        },
+        .fs_descs = fs_descriptors,
+        .hs_descs = hs_descriptors,
+};
+
 static struct DescV2 v2_descriptor = {
         .header =
                 {
@@ -205,8 +226,12 @@ static bool InitFunctionFs(usb_handle* h) {
 
         auto ret = write(h->control.get(), &v2_descriptor, sizeof(v2_descriptor));
         if (ret < 0) {
-            PLOG(ERROR) << "cannot write descriptors " << kUsbFfsFastbootEp0;
-            goto err;
+            // fallback to v1 descriptor
+            ret = write(h->control.get(), &v1_descriptor, sizeof(v1_descriptor));
+            if (ret < 0) {
+                PLOG(ERROR) << "cannot write descriptors " << kUsbFfsFastbootEp0;
+                goto err;
+            }
         }
 
         ret = write(h->control.get(), &strings, sizeof(strings));
