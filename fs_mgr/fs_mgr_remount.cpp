@@ -630,7 +630,7 @@ int main(int argc, char* argv[]) {
     // If somehow this executable is delivered on a "user" build, it can
     // not function, so providing a clear message to the caller rather than
     // letting if fall through and provide a lot of confusing failure messages.
-    if (!ALLOW_ADBD_DISABLE_VERITY || !android::base::GetBoolProperty("ro.debuggable", false)) {
+    if (!ALLOW_ADBD_DISABLE_VERITY) {
         LOG(ERROR) << "Device must be userdebug build";
         return EXIT_FAILURE;
     }
