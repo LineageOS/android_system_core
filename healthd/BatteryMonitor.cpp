@@ -320,6 +320,7 @@ static BatteryMonitor::PowerSupplyType readRawPowerSupplyType(const String8& pat
             {"USB_DCP", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
             {"USB_HVDCP", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
             {"USB_HVDCP_3", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
+            {"USB_HVDCP_3P5", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
             {"USB_CDP", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
             {"USB_ACA", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
             {"USB_C", BatteryMonitor::ANDROID_POWER_SUPPLY_TYPE_AC},
