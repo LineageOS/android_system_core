@@ -62,6 +62,23 @@ cc_binary_host {
 }
 
 cc_binary_host {
+    name: "simg2img_static",
+    srcs: [
+        "simg2img.cpp",
+        "sparse_crc32.cpp",
+    ],
+    static_libs: [
+        "libsparse",
+        "libz",
+        "libbase",
+    ],
+
+    cflags: ["-Werror"],
+    stl: "libc++_static",
+    static_executable: true,
+}
+
+cc_binary_host {
     name: "img2simg",
     srcs: ["img2simg.cpp"],
     static_libs: [
