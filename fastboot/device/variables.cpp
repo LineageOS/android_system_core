@@ -447,7 +447,10 @@ std::vector<std::vector<std::string>> GetAllPartitionArgsNoSlot(FastbootDevice* 
 
 bool GetHardwareRevision(FastbootDevice* /* device */, const std::vector<std::string>& /* args */,
                          std::string* message) {
-    *message = android::base::GetProperty("ro.revision", "");
+    *message = android::base::GetProperty("ro.boot.hardware.revision", "");
+    if (message->empty()) {
+        *message = android::base::GetProperty("ro.revision", "");
+    }
     return true;
 }
 
