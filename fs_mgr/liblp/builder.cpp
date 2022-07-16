@@ -1043,8 +1043,8 @@ bool MetadataBuilder::UpdateBlockDeviceInfo(size_t index, const BlockDeviceInfo&
     CHECK(index < block_devices_.size());
 
     LpMetadataBlockDevice& block_device = block_devices_[index];
-    if (device_info.size != block_device.size) {
-        LERROR << "Device size does not match (got " << device_info.size << ", expected "
+    if (device_info.size < block_device.size) {
+        LERROR << "Device size does not fit (got " << device_info.size << ", expected "
                << block_device.size << ")";
         return false;
     }
