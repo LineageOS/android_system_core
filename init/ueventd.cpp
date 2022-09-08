@@ -140,6 +140,7 @@ class ColdBoot {
     bool enable_parallel_restorecon_;
 
     std::vector<Uevent> uevent_queue_;
+    std::vector<Uevent> uevent_deferred_queue_;
 
     std::set<pid_t> subprocess_pids_;
 
@@ -209,6 +210,13 @@ void ColdBoot::GenerateRestoreCon(const std::string& directory) {
 
 void ColdBoot::RegenerateUevents() {
     uevent_listener_.RegenerateUevents([this](const Uevent& uevent) {
+        for (auto& uevent_handler : uevent_handlers_) {
+            if (uevent_handler->IsUeventDeferred(uevent)) {
+                LOG(INFO) << "deferring uevent(action=" << uevent.action << ", modalias=" << uevent.modalias << ")";
+                uevent_deferred_queue_.emplace_back(uevent);
+                return ListenerAction::kContinue;
+            }
+        }
         uevent_queue_.emplace_back(uevent);
         return ListenerAction::kContinue;
     });
@@ -291,6 +299,12 @@ void ColdBoot::Run() {
     }
 
     WaitForSubProcesses();
+
+    for (auto& uevent : uevent_deferred_queue_) {
+        for (auto& uevent_handler : uevent_handlers_) {
+            uevent_handler->HandleUevent(uevent);
+        }
+    }
 
     android::base::SetProperty(kColdBootDoneProp, "true");
     LOG(INFO) << "Coldboot took " << cold_boot_timer.duration().count() / 1000.0f << " seconds";

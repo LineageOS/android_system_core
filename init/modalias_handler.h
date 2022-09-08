@@ -34,6 +34,10 @@ class ModaliasHandler : public UeventHandler {
 
     void HandleUevent(const Uevent& uevent) override;
 
+    bool IsUeventDeferred(const Uevent& uevent) override;
+
+    void ColdbootDone() override;
+
   private:
     Modprobe modprobe_;
 };

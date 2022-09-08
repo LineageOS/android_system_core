@@ -262,7 +262,7 @@ bool Modprobe::ParseBlocklistCallback(const std::vector<std::string>& args) {
     auto it = args.begin();
     const std::string& type = *it++;
 
-    if (type != "blocklist") {
+    if (type != "blocklist" && type != "deferred") {
         LOG(ERROR) << "non-blocklist line encountered in modules.blocklist";
         return false;
     }
@@ -278,7 +278,16 @@ bool Modprobe::ParseBlocklistCallback(const std::vector<std::string>& args) {
     if (canonical_name.empty()) {
         return false;
     }
-    this->module_blocklist_.emplace(canonical_name);
+
+    if (type == "blocklist") {
+        this->module_blocklist_.emplace(canonical_name);
+    } else if (type == "deferred") {
+        for (auto& [alias, aliased_module]: this->module_aliases_) {
+            if (MakeCanonical(aliased_module) == canonical_name) {
+                this->module_deferred_aliases_.push_back(alias);
+            }
+        }
+    }
 
     return true;
 }
@@ -402,6 +411,10 @@ Modprobe::Modprobe(const std::vector<std::string>& base_paths, const std::string
     }
 
     ParseKernelCmdlineOptions();
+}
+
+void Modprobe::EnableDeferred(bool enable) {
+    deferred_enabled = enable;
 }
 
 std::vector<std::string> Modprobe::GetDependencies(const std::string& module) {
@@ -672,4 +685,14 @@ bool Modprobe::GetAllDependencies(const std::string& module,
         }
     }
     return true;
+}
+
+bool Modprobe::IsAliasDeferred(const std::string& alias_name) {
+    if (deferred_enabled) {
+        for (auto& deferred_alias: module_deferred_aliases_) {
+            if (fnmatch(deferred_alias.c_str(), alias_name.c_str(), 0) != 0) continue;
+            return true;
+        }
+    }
+    return false;
 }
