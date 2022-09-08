@@ -43,6 +43,8 @@ class Modprobe {
     void ResetModuleCount() { module_count_ = 0; }
     int GetModuleCount() { return module_count_; }
     bool IsBlocklisted(const std::string& module_name);
+    bool IsAliasDeferred(const std::string& alias_name);
+    void EnableDeferred(bool enable);
 
   private:
     std::string MakeCanonical(const std::string& module_path);
@@ -72,9 +74,11 @@ class Modprobe {
     std::vector<std::string> module_load_;
     std::unordered_map<std::string, std::string> module_options_;
     std::set<std::string> module_blocklist_;
+    std::vector<std::string> module_deferred_aliases_;
     std::mutex module_loaded_lock_;
     std::unordered_set<std::string> module_loaded_;
     std::unordered_set<std::string> module_loaded_paths_;
     int module_count_ = 0;
     bool blocklist_enabled = false;
+    bool deferred_enabled = false;
 };

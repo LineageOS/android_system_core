@@ -25,11 +25,22 @@ namespace android {
 namespace init {
 
 ModaliasHandler::ModaliasHandler(const std::vector<std::string>& base_paths)
-    : modprobe_(base_paths) {}
+    : modprobe_(base_paths) {
+    modprobe_.EnableDeferred(true);
+}
 
 void ModaliasHandler::HandleUevent(const Uevent& uevent) {
     if (uevent.modalias.empty()) return;
     modprobe_.LoadWithAliases(uevent.modalias, true);
+}
+
+bool ModaliasHandler::IsUeventDeferred(const Uevent& uevent) {
+    if (!uevent.modalias.empty() && modprobe_.IsAliasDeferred(uevent.modalias)) return true;
+    return false;
+}
+
+void ModaliasHandler::ColdbootDone() {
+    modprobe_.EnableDeferred(false);
 }
 
 }  // namespace init
