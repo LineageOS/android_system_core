@@ -202,9 +202,14 @@ bool FirstStageMount::MountPartition(const Fstab::iterator& begin, bool erase_sa
             return false;
         }
     }
-    if (!SetUpDmVerity(&(*begin))) {
-        PLOG(ERROR) << "Failed to setup verity for '" << begin->mount_point << "'";
-        return false;
+
+    if (begin->fs_mgr_flags.avb) {
+        if (!SetUpDmVerity(&(*begin))) {
+            PLOG(ERROR) << "Failed to setup verity for '" << begin->mount_point << "'";
+            return false;
+        }
+    } else {
+        LOG(INFO) << "AVB is not enabled, skip verity setup for '" << begin->mount_point << "'";
     }
 
     bool mounted = (fs_mgr_do_mount_one(*begin) == 0);
