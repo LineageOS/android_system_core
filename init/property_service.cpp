@@ -853,7 +853,7 @@ static void LoadPropertiesFromSecondStageRes(std::map<std::string, std::string>*
 // on runtime.
 static void update_sys_usb_config() {
     // emulators don't have USB, they enable adb another way.
-    const bool add_adb_func = android::base::GetBoolProperty("ro.debuggable", false) &&
+    const bool add_adb_func = android::base::GetBoolProperty("ro.adb.secure", false) &&
                               android::base::GetBoolProperty("ro.adb.has_usb", true);
 
     std::string config = android::base::GetProperty("persist.sys.usb.config", "");
