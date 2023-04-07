@@ -4,6 +4,12 @@
 # This is a common source of Android security bugs.
 #
 
+# Trigger enabling USB (if applicable) as early as possible by placing this at the top.
+on property:ro.persistent_properties.ready=true && property:persist.init.trust_restrict_usb=0
+    # Allows USB connection to start working right away, without being unplugged and re-plugged.
+    # Service is defined in device-specific init files. (Harmless warning in dmesg if not defined.)
+    restart enable_usb_data
+
 import /init.environ.rc
 import /system/etc/init/hw/init.usb.rc
 import /init.${ro.hardware}.rc
