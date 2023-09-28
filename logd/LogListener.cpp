@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+#include <android-base/logging.h>
+#include "LogUtils.h"
+
 #include <limits.h>
 #include <sys/cdefs.h>
 #include <sys/prctl.h>
@@ -112,6 +115,39 @@ bool LogListener::onDataAvailable(SocketClient* cli) {
     }
 
     return true;
+
+    if (!IsBinary(logId)) {
+        // clang-format off
+        static constexpr android::base::LogSeverity kAndroidLogPriorityToLogSeverity[] = {
+            [ANDROID_LOG_UNKNOWN] = android::base::FATAL,
+            [ANDROID_LOG_DEFAULT] = android::base::INFO,
+            [ANDROID_LOG_VERBOSE] = android::base::INFO,
+            [ANDROID_LOG_DEBUG] = android::base::INFO,
+            [ANDROID_LOG_INFO] = android::base::INFO,
+            [ANDROID_LOG_WARN] = android::base::WARNING,
+            [ANDROID_LOG_ERROR] = android::base::ERROR,
+            [ANDROID_LOG_FATAL] = android::base::FATAL,
+            [ANDROID_LOG_SILENT] = android::base::FATAL,
+        };
+        // clang-format on
+        static_assert(sizeof(kAndroidLogPriorityToLogSeverity) / sizeof(int) ==
+                      ANDROID_LOG_SILENT + 1);
+        const int priority = *msg;
+        const auto severity = kAndroidLogPriorityToLogSeverity[priority];
+        const char* tag = msg + 1;
+        const int tag_len = strnlen(tag, n - 1);
+        const char* msg_body = tag + tag_len + 1;
+        if (msg_body - msg >= n) {
+            msg_body = "";
+        }
+        const int pid = cred->pid;
+        const int tid = header->tid;
+        char rich_tag[1024] __attribute__((__uninitialized__));
+        snprintf(rich_tag, sizeof(rich_tag) - 1, "[%d %d] %.*s", pid, tid, tag_len, tag);
+        rich_tag[sizeof(rich_tag) - 1] = '\0';
+        android::base::KernelLogger(android::base::DEFAULT, severity, rich_tag, nullptr, 0,
+                                    msg_body);
+    }
 }
 
 int LogListener::getLogSocket() {
