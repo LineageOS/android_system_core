@@ -635,10 +635,12 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
+#if ALLOW_ADBD_DISABLE_VERITY == 0  // "user" build
     if (android::base::GetProperty("ro.boot.verifiedbootstate", "") != "orange") {
         LOG(ERROR) << "Device must be bootloader unlocked";
         return EXIT_FAILURE;
     }
+#endif
 
     // Start a threadpool to service waitForService() callbacks as
     // fs_mgr_overlayfs_* might call waitForService() to get the image service.
