@@ -223,7 +223,8 @@ BlockDeviceInfo DeviceHandler::GetBlockDeviceInfo(const std::string& uevent_path
         info.str = "";
     }
 
-    info.is_boot_device = boot_devices_.find(info.str) != boot_devices_.end();
+    info.is_boot_device = boot_devices_.find(info.str) != boot_devices_.end() ||
+                          boot_devices_.find("any") != boot_devices_.end();
 
     return info;
 }
