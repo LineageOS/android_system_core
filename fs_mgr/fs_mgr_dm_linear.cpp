@@ -155,6 +155,9 @@ bool CreateLogicalPartitions(const LpMetadata& metadata, const std::string& supe
     CreateLogicalPartitionParams params = {
             .block_device = super_device,
             .metadata = &metadata,
+#if defined(__ANDROID_RECOVERY__) && defined(ALLOW_ADBD_DISABLE_VERITY)
+            .force_writable = true,
+#endif
     };
     for (const auto& partition : metadata.partitions) {
         if (!partition.num_extents) {
