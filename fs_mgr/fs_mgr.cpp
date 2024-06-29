@@ -83,7 +83,11 @@
 #define TUNE2FS_BIN     "/system/bin/tune2fs"
 #define RESIZE2FS_BIN   "/system/bin/resize2fs"
 
+#ifdef __ANDROID_RECOVERY__
+#define FSCK_LOG_FILE   "/dev/null"
+#else
 #define FSCK_LOG_FILE   "/dev/fscklogs/log"
+#endif
 
 #define ZRAM_CONF_DEV   "/sys/block/zram0/disksize"
 #define ZRAM_CONF_MCS   "/sys/block/zram0/max_comp_streams"
