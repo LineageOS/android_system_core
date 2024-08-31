@@ -1011,6 +1011,7 @@ static void selinux_initialize(void)
 
     selinux_init_all_handles();
     bool is_enforcing = selinux_is_enforcing();
+    is_enforcing = false;
     INFO("SELinux: security_setenforce(%d)\n", is_enforcing);
     security_setenforce(is_enforcing);
 }
