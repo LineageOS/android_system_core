@@ -203,9 +203,11 @@ Result<void> ServiceParser::ParseInterface(std::vector<std::string>&& args) {
     const std::string fullname = interface_name + "/" + instance_name;
 
     for (const auto& svc : *service_list_) {
-        if (svc->interfaces().count(fullname) > 0 && !service_->is_override()) {
-            return Error() << "Interface '" << fullname << "' redefined in " << service_->name()
-                           << " but is already defined by " << svc->name();
+        if (svc->interfaces().count(fullname) > 0) {
+            if (!svc->is_override() && !service_->is_override()) {
+                return Error() << "Interface '" << fullname << "' redefined in " << service_->name()
+                               << " but is already defined by " << svc->name();
+            }
         }
     }
 
@@ -700,8 +702,9 @@ Result<void> ServiceParser::EndSection() {
     Service* old_service = service_list_->FindService(service_->name());
     if (old_service) {
         if (!service_->is_override()) {
-            return Error() << "ignored duplicate definition of service '" << service_->name()
-                           << "'";
+            LOG(WARNING) << "ignored duplicate definition of service '" << service_->name()
+                         << "'";
+            return {};
         }
 
         if (StartsWith(filename_, "/apex/") && !old_service->is_updatable()) {
