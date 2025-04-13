@@ -36,7 +36,6 @@ using std::shared_ptr;
 std::atomic<int> sUsbOperationCount{};
 
 int main(int /*argc*/, char** /*argv*/) {
-    if (GetProperty("ro.bootmode", "") == "charger") exit(0);
     int operationId = sUsbOperationCount++;
 
     ABinderProcess_setThreadPoolMaxThreadCount(1);
