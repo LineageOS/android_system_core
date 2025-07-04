@@ -783,7 +783,9 @@ bool FirstStageMountVBootV2::GetDmVerityDevices(std::set<std::string>* devices) 
             // Don't try to find logical partitions via uevent regeneration.
             logical_partitions.emplace(basename(fstab_entry.blk_device.c_str()));
         } else {
-            devices->emplace(basename(fstab_entry.blk_device.c_str()));
+            if (fstab_entry.fs_type != "none") {
+                devices->emplace(basename(fstab_entry.blk_device.c_str()));
+            }
         }
     }
 

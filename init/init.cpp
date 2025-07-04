@@ -1189,8 +1189,9 @@ int SecondStageMain(int argc, char** argv) {
     if (false) DumpState();
 
     // Make the GSI status available before scripts start running.
-    auto is_running = android::gsi::IsGsiRunning() ? "1" : "0";
-    SetProperty(gsi::kGsiBootedProp, is_running);
+    bool is_running = android::gsi::IsGsiRunning() ||
+                      !GetProperty("ro.boot.use_tmpfs_userdata", "").empty();
+    SetProperty(gsi::kGsiBootedProp, is_running ? "1" : "0");
     auto is_installed = android::gsi::IsGsiInstalled() ? "1" : "0";
     SetProperty(gsi::kGsiInstalledProp, is_installed);
     if (android::gsi::IsGsiRunning()) {
