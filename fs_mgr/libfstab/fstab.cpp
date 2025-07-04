@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <array>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -589,6 +590,44 @@ std::string GetFstabPath() {
     return "";
 }
 
+namespace {
+
+void TransformFstabForTmpfsUserdata(Fstab* fstab) {
+    std::string tmp;
+    if (!fs_mgr_get_boot_config("use_tmpfs_userdata", &tmp)) return;
+
+    std::unordered_map<std::string, bool> mountpoints = {
+            {"/cache", false},
+            {"/data", true},
+            {"/metadata", true},
+    };
+
+    std::erase_if(*fstab, [&mountpoints](const FstabEntry& e) {
+        auto it = mountpoints.find(e.mount_point);
+        if (it != mountpoints.end()) {
+            it->second = true;
+            return true;
+        }
+        return false;
+    });
+
+    for (const auto& m : mountpoints) {
+        if (!m.second) continue;
+        LINFO << __FUNCTION__ << "(): Transform fstab entry " << m.first << " for tmpfs";
+
+        FstabEntry entry;
+        entry.blk_device = m.first.substr(1);
+        entry.fs_mgr_flags.first_stage_mount = true;
+        entry.fs_mgr_flags.late_mount = true;
+        entry.fs_type = "tmpfs";
+        entry.mount_point = m.first;
+
+        fstab->push_back(entry);
+    }
+}
+
+}  // namespace
+
 bool ParseFstabFromString(const std::string& fstab_str, bool proc_mounts, Fstab* fstab_out) {
     const int expected_fields = proc_mounts ? 4 : 5;
 
@@ -633,6 +672,8 @@ bool ParseFstabFromString(const std::string& fstab_str, bool proc_mounts, Fstab*
         LERROR << "No entries found in fstab";
         return false;
     }
+
+    TransformFstabForTmpfsUserdata(&fstab);
 
     /* If an A/B partition, modify block device to be the real block device */
     if (!fs_mgr_update_for_slotselect(&fstab)) {
