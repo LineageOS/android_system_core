@@ -32,6 +32,7 @@ cc_binary {
     ],
 
     cflags: ["-Werror"],
+    recovery_available: true,
 }
 
 cc_binary {
