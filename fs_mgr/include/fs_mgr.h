@@ -86,6 +86,7 @@ std::optional<HashtreeInfo> fs_mgr_get_hashtree_info(const android::fs_mgr::Fsta
 
 bool fs_mgr_swapon_all(const android::fs_mgr::Fstab& fstab);
 bool fs_mgr_update_logical_partition(android::fs_mgr::FstabEntry* entry);
+bool fs_mgr_update_partition_image(android::fs_mgr::FstabEntry* entry);
 
 // Returns true if the given fstab entry has verity enabled, *and* the verity
 // device is in "check_at_most_once" mode.

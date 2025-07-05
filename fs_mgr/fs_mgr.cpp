@@ -1123,6 +1123,45 @@ static bool call_vdc(const std::vector<std::string>& args, int* ret) {
     return true;
 }
 
+bool fs_mgr_update_partition_image(FstabEntry* entry) {
+    if (!android::base::EndsWithIgnoreCase(entry->blk_device, ".img")) return true;
+
+    bool ro = entry->flags & MS_RDONLY;
+
+    unique_fd image_fd(TEMP_FAILURE_RETRY(open(entry->blk_device.c_str(), (ro ? O_RDONLY : O_RDWR) | O_CLOEXEC, (ro ? 0400 : 0600))));
+    if (image_fd.get() == -1) {
+        PERROR << "Cannot open image path: " << entry->blk_device;
+        return false;
+    }
+
+    LoopControl loop_control;
+    std::string loop_device;
+    if (!loop_control.Attach(image_fd.get(), 5s, &loop_device)) {
+        return false;
+    }
+
+    unique_fd loop_fd(TEMP_FAILURE_RETRY(open(loop_device.c_str(), O_RDWR | O_CLOEXEC)));
+    if (loop_fd.get() == -1) {
+        PERROR << "Cannot open " << loop_device;
+        return false;
+    }
+
+    unsigned int flags = 0;
+    if (ro) flags |= LO_FLAGS_READ_ONLY;
+    if (!LoopControl::SetStatusFlags(loop_fd.get(), flags)) {
+        PERROR << "Failed set loop flags for " << loop_device;
+        return false;
+    }
+
+    if (!LoopControl::EnableDirectIo(loop_fd.get())) {
+        return false;
+    }
+
+    entry->blk_device = loop_device;
+
+    return true;
+}
+
 bool fs_mgr_update_logical_partition(FstabEntry* entry) {
     // Logical partitions are specified with a named partition rather than a
     // block device, so if the block device is a path, then it has already
