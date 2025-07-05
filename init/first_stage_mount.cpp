@@ -448,6 +448,8 @@ bool FirstStageMountVBootV2::MountPartition(const Fstab::iterator& begin, bool e
         return false;
     }
 
+    fs_mgr_update_partition_image(&(*begin));
+
     if (begin->fs_mgr_flags.logical) {
         if (!fs_mgr_update_logical_partition(&(*begin))) {
             return false;
