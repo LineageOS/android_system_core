@@ -143,6 +143,16 @@ bool LoopControl::SetAutoClearStatus(int fd) {
     return true;
 }
 
+bool LoopControl::SetStatusFlags(int fd, unsigned int flags) {
+    struct loop_info64 info = {};
+
+    info.lo_flags |= flags;
+    if (ioctl(fd, LOOP_SET_STATUS64, &info)) {
+        return false;
+    }
+    return true;
+}
+
 LoopDevice::LoopDevice(android::base::borrowed_fd fd, const std::chrono::milliseconds& timeout_ms,
                        bool auto_close)
     : fd_(fd), owned_fd_(-1) {
