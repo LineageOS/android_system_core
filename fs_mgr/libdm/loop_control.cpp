@@ -20,9 +20,11 @@
 #include <linux/loop.h>
 #include <stdint.h>
 #include <sys/ioctl.h>
+#include <sys/sysmacros.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
 #include <android-base/unique_fd.h>
@@ -33,6 +35,13 @@ namespace android {
 namespace dm {
 
 LoopControl::LoopControl() : control_fd_(-1) {
+#if defined(__ANDROID_RAMDISK__)
+    if (access(kLoopControlDevice, F_OK) != 0) {
+        if (mknod(kLoopControlDevice, S_IFCHR | 0660, makedev(10, 237)) == -1) {
+            PLOG(ERROR) << "Failed to mknod loop-control";
+        }
+    }
+#endif
     control_fd_.reset(TEMP_FAILURE_RETRY(open(kLoopControlDevice, O_RDWR | O_CLOEXEC)));
     if (control_fd_ < 0) {
         PLOG(ERROR) << "Failed to open loop-control";
@@ -130,6 +139,29 @@ bool LoopControl::FindFreeLoopDevice(std::string* loopdev) const {
     // The total number of available devices is determined by 'loop.max_part'
     // kernel command line argument.
     *loopdev = ::android::base::StringPrintf("/dev/block/loop%d", rc);
+
+#if defined(__ANDROID_RAMDISK__)
+    if (access(loopdev->c_str(), F_OK) != 0) {
+        std::string dev_content;
+        std::string dev_path = "/sys/class/block/loop" + std::to_string(rc) + "/dev";
+        if (!android::base::ReadFileToString(dev_path, &dev_content, true)) {
+            PLOG(ERROR) << "Failed to read " << dev_path;
+            return false;
+        }
+
+        unsigned int major, minor;
+        if (sscanf(dev_content.c_str(), "%d:%d", &major, &minor) != 2) {
+            PLOG(ERROR) << "Failed to parse " << dev_path << "content: " << dev_content;
+            return false;
+        }
+
+        if (mknod(loopdev->c_str(), S_IFBLK | 0660, makedev(major, minor)) == -1) {
+            PLOG(ERROR) << "Failed to mknod loop device";
+            return false;
+        }
+    }
+#endif
+
     return true;
 }
 
@@ -158,6 +190,16 @@ bool LoopControl::SetAutoClearStatus(int fd) {
     struct loop_info64 info = {};
 
     info.lo_flags |= LO_FLAGS_AUTOCLEAR;
+    if (ioctl(fd, LOOP_SET_STATUS64, &info)) {
+        return false;
+    }
+    return true;
+}
+
+bool LoopControl::SetStatusFlags(int fd, unsigned int flags) {
+    struct loop_info64 info = {};
+
+    info.lo_flags |= flags;
     if (ioctl(fd, LOOP_SET_STATUS64, &info)) {
         return false;
     }

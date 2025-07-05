@@ -451,6 +451,8 @@ bool FirstStageMountVBootV2::MountPartition(const Fstab::iterator& begin, bool e
         return false;
     }
 
+    fs_mgr_update_partition_image(&(*begin));
+
     if (begin->fs_mgr_flags.logical) {
         if (!fs_mgr_update_logical_partition(&(*begin))) {
             return false;
@@ -486,6 +488,9 @@ bool FirstStageMountVBootV2::MountPartition(const Fstab::iterator& begin, bool e
     }
     if (end) {
         *end = current;
+    }
+    if (!mounted) {
+        fs_mgr_detach_partition_image(&(*begin));
     }
     return mounted;
 }
@@ -566,6 +571,15 @@ bool FirstStageMountVBootV2::TrySwitchSystemAsRoot() {
     return true;
 }
 
+static bool IsSystemFromImage(Fstab* fstab) {
+    auto search = std::find_if(fstab->begin(), fstab->end(), [](const auto& entry) {
+        return entry.mount_point == "/system" &&
+               android::base::EndsWithIgnoreCase(entry.blk_device, ".img");
+    });
+    if (search != fstab->end()) return true;
+    return false;
+}
+
 static bool MaybeDeriveMicrodroidVendorDiceNode(Fstab* fstab) {
     std::optional<std::string> microdroid_vendor_block_dev;
     for (auto entry = fstab->begin(); entry != fstab->end(); entry++) {
@@ -600,7 +614,7 @@ static bool MaybeDeriveMicrodroidVendorDiceNode(Fstab* fstab) {
 }
 
 bool FirstStageMountVBootV2::MountPartitions() {
-    if (!TrySwitchSystemAsRoot()) return false;
+    if (!IsSystemFromImage(&fstab_) && !TrySwitchSystemAsRoot()) return false;
 
     if (IsMicrodroid() && android::virtualization::IsOpenDiceChangesFlagEnabled()) {
         if (!MaybeDeriveMicrodroidVendorDiceNode(&fstab_)) {
@@ -611,8 +625,11 @@ bool FirstStageMountVBootV2::MountPartitions() {
     if (!SkipMountingPartitions(&fstab_, true /* verbose */)) return false;
 
     for (auto current = fstab_.begin(); current != fstab_.end();) {
-        // We've already mounted /system above.
         if (current->mount_point == "/system") {
+            if (android::base::EndsWithIgnoreCase(current->blk_device, ".img")) {
+                TrySwitchSystemAsRoot();
+            }
+            // We've already mounted /system above.
             ++current;
             continue;
         }
@@ -783,7 +800,8 @@ bool FirstStageMountVBootV2::GetDmVerityDevices(std::set<std::string>* devices) 
             // Don't try to find logical partitions via uevent regeneration.
             logical_partitions.emplace(basename(fstab_entry.blk_device.c_str()));
         } else {
-            if (fstab_entry.fs_type != "none") {
+            if (fstab_entry.fs_type != "none" &&
+                !android::base::EndsWithIgnoreCase(fstab_entry.blk_device, ".img")) {
                 devices->emplace(basename(fstab_entry.blk_device.c_str()));
             }
         }

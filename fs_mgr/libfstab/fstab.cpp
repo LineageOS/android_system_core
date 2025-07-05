@@ -665,7 +665,7 @@ bool ParseFstabFromString(const std::string& fstab_str, bool proc_mounts, Fstab*
             entry.logical_partition_name = entry.blk_device;
         }
 
-        fstab.emplace_back(std::move(entry));
+        fstab.push_back(std::move(entry));
     }
 
     if (fstab.empty()) {

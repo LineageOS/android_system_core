@@ -1038,6 +1038,11 @@ static bool mount_with_alternatives(Fstab& fstab, int start_idx, bool interrupte
             fstab[i].blk_device = fstab[start_idx].blk_device;
         }
 
+        if ((i != start_idx) &&
+            android::base::StartsWith(fstab[i].blk_device, "/dev/block/loop")) {
+            fstab[i].blk_device = fstab[start_idx].blk_device;
+        }
+
         int fs_stat = prepare_fs_for_mount(fstab[i].blk_device, fstab[i]);
         if (fs_stat & FS_STAT_INVALID_MAGIC) {
             LERROR << __FUNCTION__
@@ -1191,6 +1196,60 @@ static bool call_vdc(const std::vector<std::string>& args, int* ret) {
     if (ret != nullptr) {
         *ret = WEXITSTATUS(*ret);
     }
+    return true;
+}
+
+bool fs_mgr_update_partition_image(FstabEntry* entry) {
+    if (!android::base::EndsWithIgnoreCase(entry->blk_device, ".img")) return true;
+
+    bool ro = entry->flags & MS_RDONLY;
+
+    unique_fd image_fd(TEMP_FAILURE_RETRY(open(entry->blk_device.c_str(), (ro ? O_RDONLY : O_RDWR) | O_CLOEXEC, (ro ? 0400 : 0600))));
+    if (image_fd.get() == -1) {
+        PERROR << "Cannot open image path: " << entry->blk_device;
+        return false;
+    }
+
+    LoopControl loop_control;
+    std::string loop_device;
+    if (!loop_control.Attach(image_fd.get(), 5s, &loop_device)) {
+        return false;
+    }
+
+    unique_fd loop_fd(TEMP_FAILURE_RETRY(open(loop_device.c_str(), O_RDWR | O_CLOEXEC)));
+    if (loop_fd.get() == -1) {
+        PERROR << "Cannot open " << loop_device;
+        return false;
+    }
+
+    unsigned int flags = 0;
+    if (ro) flags |= LO_FLAGS_READ_ONLY;
+    if (!LoopControl::SetStatusFlags(loop_fd.get(), flags)) {
+        PERROR << "Failed set loop flags for " << loop_device;
+        return false;
+    }
+
+    LoopControl::EnableDirectIo(loop_fd.get());
+
+    entry->blk_device = loop_device;
+
+    return true;
+}
+
+bool fs_mgr_detach_partition_image(FstabEntry* entry) {
+    if (!android::base::StartsWith(entry->blk_device, "/dev/block/loop")) return true;
+
+    unique_fd loop_fd(TEMP_FAILURE_RETRY(open(entry->blk_device.c_str(), O_RDWR | O_CLOEXEC)));
+    if (loop_fd.get() == -1) {
+        PERROR << "Cannot open " << entry->blk_device;
+        return false;
+    }
+
+    if (ioctl(loop_fd.get(), LOOP_CLR_FD, 0)) {
+        PLOG(ERROR) << "Failed LOOP_CLR_FD for '" << entry->blk_device << "'";
+        return false;
+    }
+
     return true;
 }
 
@@ -1604,6 +1663,8 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             }
         }
 
+        fs_mgr_update_partition_image(&current_entry);
+
         if (current_entry.fs_mgr_flags.logical) {
             if (!fs_mgr_update_logical_partition(&current_entry)) {
                 LERROR << "Could not set up logical partition, skipping!";
@@ -1788,6 +1849,7 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
             }
             continue;
         }
+        fs_mgr_detach_partition_image(&current_entry);
     }
     if (userdata_mounted) {
         Fstab mounted_fstab;

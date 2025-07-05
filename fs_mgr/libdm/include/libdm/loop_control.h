@@ -55,6 +55,9 @@ class LoopControl final {
     // Set LO_FLAGS_AUTOCLEAR on a loop device.
     static bool SetAutoClearStatus(int fd);
 
+    // Set custom flags on a loop device.
+    static bool SetStatusFlags(int fd, unsigned int flags);
+
     LoopControl(const LoopControl&) = delete;
     LoopControl& operator=(const LoopControl&) = delete;
     LoopControl& operator=(LoopControl&&) = default;
