@@ -357,6 +357,8 @@ bool ParseFsMgrFlags(const std::string& flags, FstabEntry* entry) {
             }
         } else if (StartsWith(flag, "device=")) {
             ParseUserDevices(arg, entry);
+        } else if (StartsWith(flag, "ensure_path_accessible=")) {
+            entry->ensure_path_accessible = Split(arg, ";");
         } else {
             LWARNING << "Warning: unknown flag: " << flag;
         }

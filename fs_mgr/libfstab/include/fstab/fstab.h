@@ -59,6 +59,7 @@ struct FstabEntry {
     std::string avb_keys;
     std::string lowerdir;
     std::string avb_hashtree_digest;
+    std::vector<std::string> ensure_path_accessible;
 
     struct FsMgrFlags {
         bool wait : 1;

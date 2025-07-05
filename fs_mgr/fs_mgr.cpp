@@ -956,6 +956,20 @@ static int __mount(const std::string& source, const std::string& target, const F
         fs_mgr_set_blk_ro(source);
     }
 #endif
+    if ((ret == 0) && !entry.ensure_path_accessible.empty()) {
+        for (const auto& path : entry.ensure_path_accessible) {
+            if (access(std::string(target + "/"s + path).c_str(), F_OK) != 0) {
+                PERROR << "Path " << path << " is inaccessible in mount source " << source;
+                if (umount(target.c_str()) == 0) {
+                    ret = -1;
+                } else {
+                    PERROR << "Failed to unmount " << target
+                           << " due to specified path inaccessible";
+                }
+                break;
+            }
+        }
+    }
     if (ret == 0) {
         android::base::SetProperty("ro.boottime.init.mount." + Basename(target),
                                    std::to_string(t.duration().count()));
