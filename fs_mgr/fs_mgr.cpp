@@ -1023,13 +1023,14 @@ static bool mount_with_alternatives(Fstab& fstab, int start_idx, bool interrupte
     return true;
 }
 
-static bool TranslateExtLabels(FstabEntry* entry) {
+static bool TranslateFsLabels(FstabEntry* entry) {
     if (!StartsWith(entry->blk_device, "LABEL=")) {
         return true;
     }
 
     std::string label = entry->blk_device.substr(6);
-    if (label.size() > 16) {
+    if ((is_extfs(entry->fs_type) && label.size() > 16) ||
+        (entry->fs_type == "vfat" && label.size() > 11)) {
         LERROR << "FS label is longer than allowed by filesystem";
         return false;
     }
@@ -1052,20 +1053,49 @@ static bool TranslateExtLabels(FstabEntry* entry) {
             return false;
         }
 
-        ext4_super_block super_block;
-        if (TEMP_FAILURE_RETRY(lseek(fd, 1024, SEEK_SET)) < 0 ||
-            TEMP_FAILURE_RETRY(read(fd, &super_block, sizeof(super_block))) !=
-                    sizeof(super_block)) {
-            // Probably a loopback device or something else without a readable superblock.
-            continue;
+        std::string read_label;
+
+        if (is_extfs(entry->fs_type)) {
+            ext4_super_block super_block;
+            if (TEMP_FAILURE_RETRY(lseek(fd, 1024, SEEK_SET)) < 0 ||
+                TEMP_FAILURE_RETRY(read(fd, &super_block, sizeof(super_block))) !=
+                        sizeof(super_block)) {
+                // Probably a loopback device or something else without a readable superblock.
+                continue;
+            }
+
+            if (super_block.s_magic != EXT4_SUPER_MAGIC) {
+                LINFO << "/dev/block/" << ent->d_name << " not ext{234}";
+                continue;
+            }
+
+            read_label = super_block.s_volume_name;
+        } else if (entry->fs_type == "vfat") {
+            char vfat_fs_type[9], vfat_fs_label[12];
+            unsigned int vfat_fs_label_offset;
+
+            if (TEMP_FAILURE_RETRY(lseek(fd, 54, SEEK_SET)) == 0 &&
+                TEMP_FAILURE_RETRY(read(fd, &vfat_fs_type, 8)) == 8 &&
+                (memcmp(vfat_fs_type, "FAT12   ", 8) == 0 ||
+                 memcmp(vfat_fs_type, "FAT16   ", 8) == 0)) {
+                vfat_fs_label_offset = 43;
+            } else if (TEMP_FAILURE_RETRY(lseek(fd, 82, SEEK_SET)) == 0 &&
+                TEMP_FAILURE_RETRY(read(fd, &vfat_fs_type, 8)) == 8 &&
+                memcmp(vfat_fs_type, "FAT32   ", 8) == 0) {
+                vfat_fs_label_offset = 71;
+            } else {
+                continue;
+            }
+
+            if (TEMP_FAILURE_RETRY(lseek(fd, vfat_fs_label_offset, SEEK_SET)) == 0 &&
+                TEMP_FAILURE_RETRY(read(fd, &vfat_fs_label, 11)) == 11) {
+                read_label = std::string(vfat_fs_label);
+            } else {
+                continue;
+            }
         }
 
-        if (super_block.s_magic != EXT4_SUPER_MAGIC) {
-            LINFO << "/dev/block/" << ent->d_name << " not ext{234}";
-            continue;
-        }
-
-        if (label == super_block.s_volume_name) {
+        if (label == read_label) {
             std::string new_blk_device = "/dev/block/"s + ent->d_name;
 
             LINFO << "resolved label " << entry->blk_device << " to " << new_blk_device;
@@ -1565,11 +1595,9 @@ int fs_mgr_mount_all(Fstab* fstab, int mount_mode) {
         }
 
         // Translate LABEL= file system labels into block devices.
-        if (is_extfs(current_entry.fs_type)) {
-            if (!TranslateExtLabels(&current_entry)) {
-                LERROR << "Could not translate label to block device";
-                continue;
-            }
+        if (!TranslateFsLabels(&current_entry)) {
+            LERROR << "Could not translate label to block device";
+            continue;
         }
 
         if (current_entry.fs_mgr_flags.logical) {
