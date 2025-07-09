@@ -16,6 +16,23 @@
       "message": "does work but i\u0027m not sure if this is the best way to deal with \"ERROR: recovery: Read state file failed: No such file or directory\"",
       "revId": "20933df73682ade330310a0953616d78f49096ad",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8cce8385_1b775cfa",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4550
+      },
+      "writtenOn": "2025-07-09T04:37:48Z",
+      "side": 1,
+      "message": "Do something like https://review.lineageos.org/c/LineageOS/android_system_core/+/433587/",
+      "revId": "20933df73682ade330310a0953616d78f49096ad",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
