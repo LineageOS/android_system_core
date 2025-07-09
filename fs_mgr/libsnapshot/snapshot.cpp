@@ -3203,7 +3203,11 @@ SnapshotUpdateStatus SnapshotManager::ReadSnapshotUpdateStatus(LockedFile* lock)
     SnapshotUpdateStatus status = {};
     std::string contents;
     if (!android::base::ReadFileToString(GetStateFilePath(), &contents)) {
+#ifdef __ANDROID_RECOVERY__
+        PLOG(WARNING) << "Read state file failed";
+#else
         PLOG(ERROR) << "Read state file failed";
+#endif
         status.set_state(UpdateState::None);
         return status;
     }
