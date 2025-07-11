@@ -29,5 +29,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef __INIT_VENDOR__H__
 #define __INIT_VENDOR__H__
-extern void vendor_load_properties(void);
+void vendor_load_properties(void);
+void vendor_process_bootenv(void);
 #endif /* __INIT_VENDOR__H__ */

@@ -35,3 +35,8 @@ __attribute__ ((weak))
 void vendor_load_properties()
 {
 }
+
+__attribute__ ((weak))
+void vendor_process_bootenv()
+{
+}
