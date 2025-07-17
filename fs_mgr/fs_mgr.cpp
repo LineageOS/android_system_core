@@ -897,6 +897,7 @@ static int __mount(const std::string& source, const std::string& target, const F
     bool try_f2fs_fallback = false;
     bool try_f2fs_quota =
             is_f2fs(entry.fs_type) && GetIntProperty("ro.product.first_api_level", -1) > 36;
+    bool try_readonly = !read_only;
     Timer t;
 
     do {
@@ -913,6 +914,7 @@ static int __mount(const std::string& source, const std::string& target, const F
         } else {
             checkpoint_opts = "";
         }
+        if (try_readonly && (save_errno == EACCES || save_errno == EROFS)) mountflags |= MS_RDONLY;
         opts = entry.fs_options + checkpoint_opts;
         if (try_f2fs_quota) {
             opts += ",usrquota,grpquota,prjquota";
@@ -938,7 +940,8 @@ static int __mount(const std::string& source, const std::string& target, const F
         save_errno = errno;
         if (try_f2fs_gc_allowance) gc_allowance += 10;
     } while ((ret && save_errno == EAGAIN && gc_allowance <= 100) ||
-             (ret && save_errno == EINVAL && (try_f2fs_gc_allowance || try_f2fs_fallback)));
+             (ret && save_errno == EINVAL && (try_f2fs_gc_allowance || try_f2fs_fallback)) ||
+             (try_readonly && ret && (save_errno == EACCES || save_errno == EROFS)));
     const char* target_missing = "";
     const char* source_missing = "";
     if (save_errno == ENOENT) {
