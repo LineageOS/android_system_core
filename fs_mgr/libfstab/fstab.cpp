@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <array>
+#include <filesystem>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -925,9 +926,66 @@ bool SkipMountWithConfig(const std::string& skip_mount_config, Fstab* fstab, boo
     return true;
 }
 
+namespace {
+
+void AddOemMountpointContainingPathFstabEntries(Fstab* fstab) {
+    std::string contain;
+    if (!fs_mgr_get_boot_config("mount_on_oem_which_contain", &contain)) return;
+    LINFO << __FUNCTION__ << "(): Boot config value: " << contain;
+
+#if defined(__ANDROID_RAMDISK__)
+    // Block devices like USB drives may need some time to appear...
+    LINFO << __FUNCTION__ << "(): Delaying";
+    sleep(3);
+#endif
+
+    std::vector<std::string> blk_devices;
+
+    for (const auto& entry : std::filesystem::directory_iterator("/sys/block")) {
+        std::string name = entry.path().filename().string();
+        if (!android::base::StartsWith(name, ".") && !android::base::StartsWith(name, "dm-") &&
+            !android::base::StartsWith(name, "loop") && !android::base::StartsWith(name, "ram") &&
+            !android::base::StartsWith(name, "zram")) {
+            for (const auto& sentry : std::filesystem::directory_iterator("/sys/block/" + name)) {
+                std::string sname = sentry.path().filename().string();
+                if (android::base::StartsWith(sname, name)) {
+                    LINFO << __FUNCTION__ << "(): Found block device " << sname;
+                    blk_devices.push_back(sname);
+                }
+            }
+            LINFO << __FUNCTION__ << "(): Found block device " << name;
+            blk_devices.push_back(name);
+        }
+    }
+
+    if (blk_devices.empty()) return;
+
+    const std::vector<std::string> filesystems = {"erofs",   "exfat", "ext4",     "f2fs",
+                                                  "iso9660", "ntfs",  "squashfs", "vfat"};
+
+    for (const auto& bdev : blk_devices) {
+        for (const auto& fs : filesystems) {
+            FstabEntry entry;
+
+            entry.blk_device = "/dev/block/" + bdev;
+            entry.ensure_path_accessible = Split(contain, ";");
+            entry.mount_point = "/oem";
+            entry.fs_mgr_flags.first_stage_mount = true;
+            entry.fs_type = fs;
+
+            fstab->push_back(std::move(entry));
+        }
+    }
+}
+
+}  // namespace
+
 // Loads the fstab file and combines with fstab entries passed in from device tree.
 bool ReadDefaultFstab(Fstab* fstab) {
     fstab->clear();
+
+    AddOemMountpointContainingPathFstabEntries(fstab);
+
     ReadFstabFromDt(fstab, false /* verbose */);
 
     Fstab default_fstab;
