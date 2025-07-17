@@ -121,7 +121,7 @@ bool TryPathMount(FstabEntry* rec, const std::string& mount_pt) {
     }
 
     static const std::vector<std::string> supported_fs{"ext4", "squashfs", "vfat", "exfat", "f2fs",
-                                                       "erofs", "none", "apfs"};
+                                                       "erofs", "none", "apfs", "virtiofs"};
     if (std::find(supported_fs.begin(), supported_fs.end(), rec->fs_type) == supported_fs.end()) {
 #if defined(__ANDROID_RECOVERY__)
         auto supported_fs_from_prop =
