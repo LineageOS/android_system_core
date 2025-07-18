@@ -800,7 +800,8 @@ bool FirstStageMountVBootV2::GetDmVerityDevices(std::set<std::string>* devices) 
             // Don't try to find logical partitions via uevent regeneration.
             logical_partitions.emplace(basename(fstab_entry.blk_device.c_str()));
         } else {
-            if (fstab_entry.fs_type != "none" &&
+            if (fstab_entry.fs_type != "none" && fstab_entry.fs_type != "tmpfs" &&
+                fstab_entry.fs_type != "virtiofs" &&
                 !android::base::EndsWithIgnoreCase(fstab_entry.blk_device, ".img")) {
                 devices->emplace(basename(fstab_entry.blk_device.c_str()));
             }
