@@ -479,7 +479,10 @@ bool FirstStageMountVBootV2::MountPartition(const Fstab::iterator& begin, bool e
         if (!mounted) {
             // blk_device is already updated to /dev/dm-<N> by SetUpDmVerity() above.
             // Copy it from the begin iterator.
-            current->blk_device = begin->blk_device;
+            if (begin->fs_mgr_flags.avb || begin->fs_mgr_flags.logical ||
+                android::base::StartsWith(begin->blk_device, "/dev/block/loop")) {
+                current->blk_device = begin->blk_device;
+            }
             mounted = (fs_mgr_do_mount_one(*current) == 0);
         }
     }
