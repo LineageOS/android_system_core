@@ -24,6 +24,8 @@
 #include <android-base/properties.h>
 #include <property_info_parser/property_info_parser.h>
 
+#include <selinux/selinux.h>
+
 using android::base::GetProperty;
 using android::properties::PropertyInfoAreaFile;
 
@@ -92,6 +94,16 @@ void PrintProperty(const char* name, const char* default_value, ResultType resul
 
 extern "C" int getprop_main(int argc, char** argv) {
     auto result_type = ResultType::Value;
+
+    const char* app_context_prefix = "u:r:untrusted_app";
+    char* context;
+    if (!getcon(&context)) {
+        bool is_app = !strncmp(context, app_context_prefix,
+                               strlen(app_context_prefix));
+        freecon(context);
+        if (is_app)
+            return 0;
+    }
 
     while (true) {
         static const struct option long_options[] = {
