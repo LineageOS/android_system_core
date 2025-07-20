@@ -12,7 +12,7 @@ import /system/etc/init/hw/init.usb.configfs.rc
 import /system/etc/init/hw/init.${ro.zygote}.rc
 
 # Cgroups are mounted right before early-init using list from /etc/cgroups.json
-on early-init
+on early-init-begin
     # Disable sysrq from keyboard
     write /proc/sys/kernel/sysrq 0
 
@@ -78,6 +78,7 @@ on early-init
     # Run the init_dev_config service to configure the device.
     exec_start init_dev_config
 
+on early-init-end
     # Run apexd-bootstrap so that APEXes that provide critical libraries
     # become available. Note that this is executed as exec_start to ensure that
     # the libraries are available to the processes started after this statement.

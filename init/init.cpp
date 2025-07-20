@@ -1211,6 +1211,9 @@ int SecondStageMain(int argc, char** argv) {
 
     am.QueueBuiltinAction(SetupCgroupsAction, "SetupCgroups");
     am.QueueBuiltinAction(TestPerfEventSelinuxAction, "TestPerfEventSelinux");
+    am.QueueEventTrigger("early-init-begin");
+    am.QueueEventTrigger("early-init-middle");
+    am.QueueEventTrigger("early-init-end");
     am.QueueEventTrigger("early-init");
     am.QueueBuiltinAction(ConnectEarlyStageSnapuserdAction, "ConnectEarlyStageSnapuserd");
 
