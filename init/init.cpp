@@ -122,6 +122,8 @@ using android::snapshot::SnapshotManager;
 namespace android {
 namespace init {
 
+static bool bootmode_console = false;
+
 static int property_triggers_enabled = 0;
 
 static int sigterm_fd = -1;
@@ -693,8 +695,11 @@ static Result<void> queue_property_triggers_action(const BuiltinArguments& args)
 // Needs to be called after PropertyInit() is called
 static BootMode GetBootMode() {
     auto bootmode = GetProperty("ro.bootmode", GetProperty("ro.boot.mode", ""));
+
     if (bootmode == "charger") {
         return BootMode::CHARGER_MODE;
+    } else if (bootmode == "console") {
+        bootmode_console = true;
     } else if (IsRecoveryMode() && GetIntProperty("ro.boot.force_normal_boot", 0) == 0) {
         return BootMode::RECOVERY_MODE;
     }
@@ -1278,6 +1283,8 @@ int SecondStageMain(int argc, char** argv) {
     // Don't mount filesystems or start core system services in charger mode.
     if (bootmode == BootMode::CHARGER_MODE) {
         am.QueueEventTrigger("charger");
+    } else if (bootmode_console) {
+        am.QueueEventTrigger("console");
     } else {
         am.QueueEventTrigger("late-init");
     }
