@@ -40,6 +40,7 @@ namespace init {
 
 [[clang::no_destroy]] static std::string init_fatal_reboot_target = "bootloader";
 static bool init_fatal_panic = false;
+static bool init_fatal_pause = false;
 
 // this needs to read the /proc/* files directly because it is called before
 // ro.boot.* properties are initialized
@@ -56,6 +57,16 @@ void SetFatalRebootTarget(const std::optional<std::string>& reboot_target) {
     } else {
         const std::string kInitFatalPanicString = kInitFatalPanicParamString + "=true";
         init_fatal_panic = cmdline.find(kInitFatalPanicString) != std::string::npos;
+    }
+
+    const std::string kInitFatalPauseParamString = "androidboot.init_fatal_pause";
+    if (cmdline.find(kInitFatalPauseParamString) == std::string::npos) {
+        std::string value;
+        init_fatal_pause = (android::fs_mgr::GetBootconfig(kInitFatalPauseParamString, &value) &&
+                            value == "true");
+    } else {
+        const std::string kInitFatalPauseString = kInitFatalPauseParamString + "=true";
+        init_fatal_pause = cmdline.find(kInitFatalPauseString) != std::string::npos;
     }
 
     if (reboot_target) {
@@ -190,6 +201,11 @@ void InstallRebootSignalHandlers() {
         // want them to trigger reboot, so we directly call _exit() for children processes here.
         if (getpid() != 1) {
             _exit(signal);
+        }
+
+        if (init_fatal_pause) {
+            LOG(ERROR) << "Call pause()";
+            pause();
         }
 
         // Calling DoReboot() or LOG(FATAL) is not a good option as this is a signal handler.
