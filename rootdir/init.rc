@@ -512,6 +512,13 @@ on init
     chmod 0770 /mnt/vm
     mkdir /mnt/vm/early 0770 system system
 
+on console
+    start console
+
+# Start the system when the user type `exit` on console
+on property:init.svc.console=restarting
+    trigger late-init
+
 # Run boringssl self test for each ABI.  Any failures trigger reboot to firmware.
 import /system/etc/init/hw/init.boringssl.${ro.zygote}.rc
 
