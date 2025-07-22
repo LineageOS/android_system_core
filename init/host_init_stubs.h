@@ -46,7 +46,11 @@ inline bool CanReadProperty(const std::string&, const std::string&) {
 }
 
 // reboot_utils.h
+#if defined(USE_REAL_SET_FATAL_REBOOT_TARGET_FUNC)
+void SetFatalRebootTarget(const std::optional<std::string>& reboot_target = std::nullopt);
+#else
 inline void SetFatalRebootTarget(const std::optional<std::string>& = std::nullopt) {}
+#endif
 inline void __attribute__((noreturn)) InitFatalReboot(int signal_number) {
     abort();
 }

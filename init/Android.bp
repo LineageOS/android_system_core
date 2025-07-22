@@ -446,6 +446,7 @@ init_first_stage_cc_defaults {
         "-DSHUTDOWN_ZERO_TIMEOUT=0",
         "-DLOG_UEVENTS=0",
         "-DSEPOLICY_VERSION=30", // TODO(jiyong): externalize the version number
+        "-DUSE_REAL_SET_FATAL_REBOOT_TARGET_FUNC",
     ] + GLOBAL_HWASAN_OPTIONS,
 
     product_variables: {
