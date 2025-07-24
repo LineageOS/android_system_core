@@ -120,13 +120,12 @@ ListenerAction BlockDevInitializer::HandleUevent(const Uevent& uevent,
     }
 
     auto name = uevent.partition_name;
-    if (name.empty()) {
-        size_t base_idx = uevent.path.rfind('/');
-        if (base_idx == std::string::npos) {
-            return ListenerAction::kContinue;
-        }
-        name = uevent.path.substr(base_idx + 1);
+
+    size_t base_idx = uevent.path.rfind('/');
+    if (base_idx == std::string::npos) {
+        return ListenerAction::kContinue;
     }
+    auto block_device_name = uevent.path.substr(base_idx + 1);
 
     auto iter = devices->find(name);
     if (iter == devices->end()) {
@@ -135,7 +134,11 @@ ListenerAction BlockDevInitializer::HandleUevent(const Uevent& uevent,
             iter = devices->find(partition_name);
         }
         if (iter == devices->end()) {
-            return ListenerAction::kContinue;
+            name = block_device_name;
+            iter = devices->find(name);
+            if (iter == devices->end()) {
+                return ListenerAction::kContinue;
+            }
         }
     }
 
