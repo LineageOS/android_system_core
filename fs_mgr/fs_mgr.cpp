@@ -2202,10 +2202,9 @@ bool fs_mgr_swapon_all(const Fstab& fstab) {
                         fopen(ZRAM_CONF_MCS, "re"), fclose};
                 if (zram_mcs_fp == nullptr) {
                     LERROR << "Unable to open zram conf comp device " << ZRAM_CONF_MCS;
-                    ret = false;
-                    continue;
+                } else {
+                    fprintf(zram_mcs_fp.get(), "%d\n", entry.max_comp_streams);
                 }
-                fprintf(zram_mcs_fp.get(), "%d\n", entry.max_comp_streams);
             }
 
             auto zram_fp =
