@@ -75,6 +75,8 @@
 #include "system/core/init/property_service.pb.h"
 #include "util.h"
 
+static constexpr char kOverrideProp[] = "/system/etc/override.prop";
+
 static constexpr char APPCOMPAT_OVERRIDE_PROP_FOLDERNAME[] =
         "/dev/__properties__/appcompat_override";
 static constexpr char APPCOMPAT_OVERRIDE_PROP_TREE_FILE[] =
@@ -1226,6 +1228,14 @@ void PropertyLoadBootDefaults() {
     if (access(kDebugRamdiskProp, R_OK) == 0) {
         LOG(INFO) << "Loading " << kDebugRamdiskProp;
         if (auto res = load_properties_from_file(kDebugRamdiskProp, nullptr, &properties);
+            !res.ok()) {
+            LOG(WARNING) << res.error();
+        }
+    }
+
+    if (access(kOverrideProp, R_OK) == 0) {
+        LOG(INFO) << "Loading " << kOverrideProp;
+        if (auto res = load_properties_from_file(kOverrideProp, nullptr, &properties);
             !res.ok()) {
             LOG(WARNING) << res.error();
         }
