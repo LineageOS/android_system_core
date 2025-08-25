@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "18203e7b_9b382c12",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29551
+      },
+      "writtenOn": "2025-08-25T17:36:23Z",
+      "side": 1,
+      "message": "Locally tested and verified:\nAfter booting, use ``ionice -p \u003cpid\u003e`` to verify f2fs-ckpt.\nFor example, if mine is 758, use ionice -p 758.\nThe output should be ``Realtime: prio 3``\nThis patch is applicable to GKI kernels (5.10 and 5.15), as well as kernels containing the checkpoint_merge patchset (such as pixel-msm-kernel).",
+      "revId": "55073ac218da835fad9327ab5364975d26f24416",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
