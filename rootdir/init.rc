@@ -1189,6 +1189,9 @@ on boot
     write /dev/sys/fs/by-name/userdata/iostat_period_ms 1000
     write /dev/sys/fs/by-name/userdata/iostat_enable 1
 
+    # F2FS tuning. Change the checkpoint thread to realtime priority
+    write /dev/sys/fs/by-name/userdata/ckpt_thread_ioprio "rt,3"
+
     # set readahead multiplier for POSIX_FADV_SEQUENTIAL files
     write /dev/sys/fs/by-name/userdata/seq_file_ra_mul 128
 
