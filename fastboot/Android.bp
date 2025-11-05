@@ -154,7 +154,6 @@ cc_binary {
         "device/flashing.cpp",
         "device/main.cpp",
         "device/usb.cpp",
-        "device/usb_iouring.cpp",
         "device/usb_client.cpp",
         "device/tcp_client.cpp",
         "device/utility.cpp",
@@ -199,7 +198,6 @@ cc_binary {
         "libzstd",
         "libsnapshot_nobinder",
         "update_metadata-protos",
-        "liburing",
     ],
 
     header_libs: [

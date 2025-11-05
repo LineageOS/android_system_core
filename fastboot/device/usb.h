@@ -18,10 +18,8 @@
 
 #include <linux/usb/functionfs.h>
 
-#include <liburing.h>
 #include <atomic>
 #include <condition_variable>
-#include <memory>
 #include <mutex>
 #include <vector>
 
@@ -37,11 +35,9 @@ struct aio_block {
     int fd;
 };
 
-int getMaxPacketSize(int ffs_fd);
-
-enum class AIOType { SYNC_IO, AIO, IO_URING };
-
 struct usb_handle {
+    usb_handle() {}
+
     std::condition_variable notify;
     std::mutex lock;
     bool open_new_connection = true;
@@ -60,9 +56,8 @@ struct usb_handle {
     struct aio_block read_aiob;
     struct aio_block write_aiob;
 
-    io_uring ring;
+    bool reads_zero_packets;
     size_t io_size;
-    AIOType aio_type;
 };
 
-std::unique_ptr<usb_handle> create_usb_handle(unsigned num_bufs, unsigned io_size);
+usb_handle* create_usb_handle(unsigned num_bufs, unsigned io_size);
