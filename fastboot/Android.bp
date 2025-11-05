@@ -148,6 +148,11 @@ cc_binary {
         },
     },
 
+    cflags: select(soong_config_variable("fastbootd", "zero_packet"), {
+        true: ["-DZERO_PACKET"],
+        default: [],
+    }),
+
     srcs: [
         "device/commands.cpp",
         "device/fastboot_device.cpp",
