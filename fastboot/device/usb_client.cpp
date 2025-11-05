@@ -232,6 +232,9 @@ static bool InitFunctionFs(usb_handle* h) {
 
     h->read_aiob.fd = h->bulk_out.get();
     h->write_aiob.fd = h->bulk_in.get();
+#ifdef ZERO_PACKET
+    h->reads_zero_packets = false;
+#endif
     return true;
 
 err:
