@@ -115,7 +115,10 @@ cc_library_host_static {
         "-Wextra",
         "-Werror",
         "-Wunreachable-code",
-    ],
+    ] + select(soong_config_variable("fastbootd", "zero_packet"), {
+        "true": ["-DZERO_PACKET"],
+        default: [],
+    }),
 
     export_include_dirs: ["."],
 
