@@ -131,9 +131,15 @@ static int usb_ffs_read(usb_handle* h, void* data, int len, bool allow_partial) 
 
 static int usb_ffs_do_aio(usb_handle* h, const void* data, int len, bool read) {
     aio_block* aiob = read ? &h->read_aiob : &h->write_aiob;
+#ifdef ZERO_PACKET
+    bool zero_packet = false;
+#endif
 
     int num_bufs = len / h->io_size + (len % h->io_size == 0 ? 0 : 1);
     const char* cur_data = reinterpret_cast<const char*>(data);
+#ifdef ZERO_PACKET
+    int packet_size = getMaxPacketSize(aiob->fd);
+#endif
 
     if (posix_madvise(const_cast<void*>(data), len, POSIX_MADV_SEQUENTIAL | POSIX_MADV_WILLNEED) <
         0) {
@@ -146,6 +152,19 @@ static int usb_ffs_do_aio(usb_handle* h, const void* data, int len, bool read) {
 
         len -= buf_len;
         cur_data += buf_len;
+
+#ifdef ZERO_PACKET
+        if (len == 0 && buf_len % packet_size == 0 && read) {
+            // adb does not expect the device to send a zero packet after data transfer,
+            // but the host *does* send a zero packet for the device to read.
+            zero_packet = h->reads_zero_packets;
+        }
+    }
+    if (zero_packet) {
+        io_prep(&aiob->iocb[num_bufs], aiob->fd, reinterpret_cast<const void*>(cur_data),
+                packet_size, 0, read);
+        num_bufs += 1;
+#endif
     }
 
     while (true) {
