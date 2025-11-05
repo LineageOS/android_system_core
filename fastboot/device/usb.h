@@ -63,6 +63,9 @@ struct usb_handle {
     io_uring ring;
     size_t io_size;
     AIOType aio_type;
+#ifdef ZERO_PACKET
+    bool reads_zero_packets;
+#endif
 };
 
 std::unique_ptr<usb_handle> create_usb_handle(unsigned num_bufs, unsigned io_size);
