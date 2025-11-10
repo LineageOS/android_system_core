@@ -16,6 +16,23 @@
       "message": "Fixes the issue i have with `otter` when running `m dist`.",
       "revId": "95340bac86c167c767a8039d2993f7776b9b09fb",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "fc4f553c_89e2fb0a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2025-11-10T07:42:52Z",
+      "side": 1,
+      "message": "move to 22.2 and happy to merge",
+      "revId": "95340bac86c167c767a8039d2993f7776b9b09fb",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
