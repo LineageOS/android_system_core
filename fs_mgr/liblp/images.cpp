@@ -226,7 +226,7 @@ bool ImageBuilder::Export(const std::string& file) {
         return false;
     }
     if (device_images_.size() > 1) {
-        LERROR << "Cannot export to a single image on multi-super configurations.";
+        LERROR << "Cannot export to a single image on retrofit builds.";
         return false;
     }
     // No gzip compression; no checksum.
