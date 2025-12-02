@@ -337,6 +337,7 @@ void BuilderFuzzer::invokeBuilderAPIs() {
                     },
                     [&]() { mBuilder->HasBlockDevice(mFdp.PickValueInArray(mPartitionNames)); },
                     [&]() { mBuilder->SetVirtualABDeviceFlag(); },
+                    [&]() { mBuilder->SetAutoSlotSuffixing(); },
                     [&]() { mBuilder->ListGroups(); },
                     [&]() { mBuilder->UsedSpace(); },
                     [&]() { mBuilder->RequireExpandedMetadataHeader(); },

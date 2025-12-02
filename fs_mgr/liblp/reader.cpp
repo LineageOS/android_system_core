@@ -393,6 +393,49 @@ std::unique_ptr<LpMetadata> ReadBackupMetadata(int fd, const LpMetadataGeometry&
     return ParseMetadata(geometry, fd);
 }
 
+namespace {
+
+bool AdjustMetadataForSlot(LpMetadata* metadata, uint32_t slot_number) {
+    std::string slot_suffix = SlotSuffixForSlotNumber(slot_number);
+    for (auto& partition : metadata->partitions) {
+        if (!(partition.attributes & LP_PARTITION_ATTR_SLOT_SUFFIXED)) {
+            continue;
+        }
+        std::string partition_name = GetPartitionName(partition) + slot_suffix;
+        if (partition_name.size() > sizeof(partition.name)) {
+            LERROR << __PRETTY_FUNCTION__ << " partition name too long: " << partition_name;
+            return false;
+        }
+        strncpy(partition.name, partition_name.c_str(), sizeof(partition.name));
+        partition.attributes &= ~LP_PARTITION_ATTR_SLOT_SUFFIXED;
+    }
+    for (auto& block_device : metadata->block_devices) {
+        if (!(block_device.flags & LP_BLOCK_DEVICE_SLOT_SUFFIXED)) {
+            continue;
+        }
+        std::string partition_name = GetBlockDevicePartitionName(block_device) + slot_suffix;
+        if (!UpdateBlockDevicePartitionName(&block_device, partition_name)) {
+            LERROR << __PRETTY_FUNCTION__ << " partition name too long: " << partition_name;
+            return false;
+        }
+        block_device.flags &= ~LP_BLOCK_DEVICE_SLOT_SUFFIXED;
+    }
+    for (auto& group : metadata->groups) {
+        if (!(group.flags & LP_GROUP_SLOT_SUFFIXED)) {
+            continue;
+        }
+        std::string group_name = GetPartitionGroupName(group) + slot_suffix;
+        if (!UpdatePartitionGroupName(&group, group_name)) {
+            LERROR << __PRETTY_FUNCTION__ << " group name too long: " << group_name;
+            return false;
+        }
+        group.flags &= ~LP_GROUP_SLOT_SUFFIXED;
+    }
+    return true;
+}
+
+}  // namespace
+
 std::unique_ptr<LpMetadata> ReadMetadata(const IPartitionOpener& opener,
                                          const std::string& super_partition, uint32_t slot_number) {
     android::base::unique_fd fd = opener.Open(super_partition, O_RDONLY);
@@ -424,6 +467,9 @@ std::unique_ptr<LpMetadata> ReadMetadata(const IPartitionOpener& opener,
         if ((metadata = ParseMetadata(geometry, fd)) != nullptr) {
             break;
         }
+    }
+    if (!metadata || !AdjustMetadataForSlot(metadata.get(), slot_number)) {
+        return nullptr;
     }
     return metadata;
 }
