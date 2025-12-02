@@ -470,7 +470,7 @@ PartitionBuilder::PartitionBuilder(FastbootDevice* device, const std::string& pa
     : device_(device) {
     std::string slot_suffix = GetSuperSlotSuffix(device, partition_name);
     slot_number_ = android::fs_mgr::SlotNumberForSlotSuffix(slot_suffix);
-    auto super_device = FindPhysicalPartition(fs_mgr_get_super_partition_name());
+    auto super_device = FindPhysicalPartition(fs_mgr_get_super_partition_name(slot_number_));
     if (!super_device) {
         return;
     }

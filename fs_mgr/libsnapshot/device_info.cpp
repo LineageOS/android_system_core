@@ -70,8 +70,8 @@ const android::fs_mgr::IPartitionOpener& DeviceInfo::GetPartitionOpener() const 
     return opener_;
 }
 
-std::string DeviceInfo::GetSuperDevice() const {
-    return fs_mgr_get_super_partition_name();
+std::string DeviceInfo::GetSuperDevice(uint32_t slot) const {
+    return fs_mgr_get_super_partition_name(slot);
 }
 
 bool DeviceInfo::IsOverlayfsSetup() const {

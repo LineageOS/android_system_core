@@ -56,7 +56,7 @@ TEST_F(DeviceTest, BlockDeviceInfo) {
 TEST_F(DeviceTest, ReadSuperPartitionCurrentSlot) {
     auto slot_suffix = fs_mgr_get_slot_suffix();
     auto slot_number = SlotNumberForSlotSuffix(slot_suffix);
-    auto super_name = fs_mgr_get_super_partition_name();
+    auto super_name = fs_mgr_get_super_partition_name(slot_number);
     auto metadata = ReadMetadata(super_name, slot_number);
     EXPECT_NE(metadata, nullptr);
 }

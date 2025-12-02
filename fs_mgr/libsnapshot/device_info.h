@@ -34,7 +34,7 @@ class DeviceInfo final : public SnapshotManager::IDeviceInfo {
     std::string GetSlotSuffix() const override;
     std::string GetOtherSlotSuffix() const override;
     const android::fs_mgr::IPartitionOpener& GetPartitionOpener() const override;
-    std::string GetSuperDevice() const override;
+    std::string GetSuperDevice(uint32_t slot) const override;
     bool IsOverlayfsSetup() const override;
     bool SetBootControlMergeStatus(MergeStatus status) override;
     bool SetActiveBootSlot(unsigned int slot) override;
