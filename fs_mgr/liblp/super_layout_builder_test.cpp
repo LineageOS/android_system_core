@@ -98,6 +98,21 @@ TEST(SuperImageTool, NoRetrofit) {
     ASSERT_FALSE(tool.Open(*metadata.get()));
 }
 
+TEST(SuperImageTool, NoRetrofit2) {
+    auto builder = MetadataBuilder::New(4_MiB, 8_KiB, 2);
+    ASSERT_NE(builder, nullptr);
+
+    Partition* p = builder->AddPartition(
+            "system_a", LP_PARTITION_ATTR_READONLY | LP_PARTITION_ATTR_SLOT_SUFFIXED);
+    ASSERT_NE(p, nullptr);
+
+    auto metadata = builder->Export();
+    ASSERT_NE(metadata, nullptr);
+
+    SuperLayoutBuilder tool;
+    ASSERT_FALSE(tool.Open(*metadata.get()));
+}
+
 TEST(SuperImageTool, NoFixedPartitions) {
     auto builder = MetadataBuilder::New(4_MiB, 8_KiB, 2);
     ASSERT_NE(builder, nullptr);

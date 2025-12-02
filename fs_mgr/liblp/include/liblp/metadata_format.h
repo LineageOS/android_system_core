@@ -56,9 +56,12 @@ extern "C" {
 #define LP_PARTITION_ATTR_NONE 0x0
 #define LP_PARTITION_ATTR_READONLY (1 << 0)
 
-/* This flag is historical and is no longer supported.
+/* This flag is only intended to be used with super_empty.img and super.img on
+ * retrofit devices. On these devices there are A and B super partitions, and
+ * we don't know ahead of time which slot the image will be applied to.
  *
- * If set, the partition name needs a slot suffix applied.
+ * If set, the partition name needs a slot suffix applied. The slot suffix is
+ * determined by the metadata slot number (0 = _a, 1 = _b).
  */
 #define LP_PARTITION_ATTR_SLOT_SUFFIXED (1 << 1)
 
@@ -316,9 +319,9 @@ typedef struct LpMetadataPartitionGroup {
     uint64_t maximum_size;
 } __attribute__((packed)) LpMetadataPartitionGroup;
 
-/* This flag is historical and is no longer supported.
- *
- * If set, the group needs a slot suffix to be interpreted correctly.
+/* This flag is only intended to be used with super_empty.img and super.img on
+ * retrofit devices. If set, the group needs a slot suffix to be interpreted
+ * correctly. The suffix is automatically applied by ReadMetadata().
  */
 #define LP_GROUP_SLOT_SUFFIXED (1 << 0)
 
@@ -367,10 +370,13 @@ typedef struct LpMetadataBlockDevice {
     uint32_t flags;
 } __attribute__((packed)) LpMetadataBlockDevice;
 
-/* This flag is historical and is no longer supported.
+/* This flag is only intended to be used with super_empty.img and super.img on
+ * retrofit devices. On these devices there are A and B super partitions, and
+ * we don't know ahead of time which slot the image will be applied to.
  *
- * If set, the block device needs a slot suffix to be interpreted
- * correctly.
+ * If set, the block device needs a slot suffix applied before being used with
+ * IPartitionOpener. The slot suffix is determined by the metadata slot number
+ * (0 = _a, 1 = _b).
  */
 #define LP_BLOCK_DEVICE_SLOT_SUFFIXED (1 << 0)
 

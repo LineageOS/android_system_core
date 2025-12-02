@@ -627,6 +627,49 @@ TEST_F(LiblpTest, FlashSparseImage) {
     ASSERT_NE(ReadBackupMetadata(fd.get(), geometry, 0), nullptr);
 }
 
+TEST_F(LiblpTest, AutoSlotSuffixing) {
+    unique_ptr<MetadataBuilder> builder = CreateDefaultBuilder();
+    ASSERT_NE(builder, nullptr);
+    ASSERT_TRUE(AddDefaultPartitions(builder.get()));
+    ASSERT_TRUE(builder->AddGroup("example", 0));
+    builder->SetAutoSlotSuffixing();
+
+    auto fd = CreateFakeDisk();
+    ASSERT_GE(fd, 0);
+
+    // Note: we bind the same fd to both names, since we want to make sure the
+    // exact same bits are getting read back in each test.
+    TestPartitionOpener opener({{"super_a", fd}, {"super_b", fd}},
+                               {{"super_a", kSuperInfo}, {"super_b", kSuperInfo}});
+    auto exported = builder->Export();
+    ASSERT_NE(exported, nullptr);
+    ASSERT_TRUE(FlashPartitionTable(opener, "super_a", *exported.get()));
+
+    auto metadata = ReadMetadata(opener, "super_b", 1);
+    ASSERT_NE(metadata, nullptr);
+    ASSERT_EQ(metadata->partitions.size(), static_cast<size_t>(1));
+    EXPECT_EQ(GetPartitionName(metadata->partitions[0]), "system_b");
+    ASSERT_EQ(metadata->block_devices.size(), static_cast<size_t>(1));
+    EXPECT_EQ(GetBlockDevicePartitionName(metadata->block_devices[0]), "super_b");
+    ASSERT_EQ(metadata->groups.size(), static_cast<size_t>(2));
+    EXPECT_EQ(GetPartitionGroupName(metadata->groups[0]), "default");
+    EXPECT_EQ(GetPartitionGroupName(metadata->groups[1]), "example_b");
+    EXPECT_EQ(metadata->groups[0].flags, 0);
+    EXPECT_EQ(metadata->groups[1].flags, 0);
+
+    metadata = ReadMetadata(opener, "super_a", 0);
+    ASSERT_NE(metadata, nullptr);
+    ASSERT_EQ(metadata->partitions.size(), static_cast<size_t>(1));
+    EXPECT_EQ(GetPartitionName(metadata->partitions[0]), "system_a");
+    ASSERT_EQ(metadata->block_devices.size(), static_cast<size_t>(1));
+    EXPECT_EQ(GetBlockDevicePartitionName(metadata->block_devices[0]), "super_a");
+    ASSERT_EQ(metadata->groups.size(), static_cast<size_t>(2));
+    EXPECT_EQ(GetPartitionGroupName(metadata->groups[0]), "default");
+    EXPECT_EQ(GetPartitionGroupName(metadata->groups[1]), "example_a");
+    EXPECT_EQ(metadata->groups[0].flags, 0);
+    EXPECT_EQ(metadata->groups[1].flags, 0);
+}
+
 TEST_F(LiblpTest, UpdateLaunchDap) {
     unique_fd fd = CreateFlashedDisk();
     ASSERT_GE(fd, 0);
