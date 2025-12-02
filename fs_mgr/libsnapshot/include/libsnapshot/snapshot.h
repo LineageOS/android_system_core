@@ -107,7 +107,7 @@ class ISnapshotManager {
         virtual std::string GetMetadataDir() const = 0;
         virtual std::string GetSlotSuffix() const = 0;
         virtual std::string GetOtherSlotSuffix() const = 0;
-        virtual std::string GetSuperDevice() const = 0;
+        virtual std::string GetSuperDevice(uint32_t slot) const = 0;
         virtual const android::fs_mgr::IPartitionOpener& GetPartitionOpener() const = 0;
         virtual bool IsOverlayfsSetup() const = 0;
         virtual bool SetBootControlMergeStatus(MergeStatus status) = 0;
