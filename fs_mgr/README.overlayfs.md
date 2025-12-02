@@ -96,6 +96,12 @@ Caveats
   may fail because of the scratch partition. If this happens, clear the scratch
   storage by running either either _fastboot flashall_ or _adb enable-verity_.
   Then reinstate the overrides and continue.
+- For implementation simplicity on retrofit dynamic partition devices,
+  take the whole alternate super (eg: if "*a*" slot, then the whole of
+  "*system_b*").
+  Since landing a filesystem on the alternate super physical device
+  without differentiating if it is setup to support logical or physical,
+  the alternate slot metadata and previous content will be lost.
 - There are other subtle caveats requiring complex logic to solve.
   Have evaluated them as too complex or not worth the trouble, please
   File a bug if a use case needs to be covered.

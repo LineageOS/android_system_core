@@ -670,7 +670,42 @@ TEST_F(LiblpTest, AutoSlotSuffixing) {
     EXPECT_EQ(metadata->groups[1].flags, 0);
 }
 
-TEST_F(LiblpTest, UpdateLaunchDap) {
+TEST_F(LiblpTest, UpdateRetrofit) {
+    ON_CALL(*GetMockedPropertyFetcher(), GetBoolProperty("ro.boot.dynamic_partitions_retrofit", _))
+            .WillByDefault(Return(true));
+
+    unique_ptr<MetadataBuilder> builder = CreateDefaultBuilder();
+    ASSERT_NE(builder, nullptr);
+    ASSERT_TRUE(AddDefaultPartitions(builder.get()));
+    ASSERT_TRUE(builder->AddGroup("example", 0));
+    builder->SetAutoSlotSuffixing();
+
+    auto fd = CreateFakeDisk();
+    ASSERT_GE(fd, 0);
+
+    // Note: we bind the same fd to both names, since we want to make sure the
+    // exact same bits are getting read back in each test.
+    TestPartitionOpener opener({{"super_a", fd}, {"super_b", fd}},
+                               {{"super_a", kSuperInfo}, {"super_b", kSuperInfo}});
+    auto exported = builder->Export();
+    ASSERT_NE(exported, nullptr);
+    ASSERT_TRUE(FlashPartitionTable(opener, "super_a", *exported.get()));
+
+    builder = MetadataBuilder::NewForUpdate(opener, "super_a", 0, 1);
+    ASSERT_NE(builder, nullptr);
+    auto updated = builder->Export();
+    ASSERT_NE(updated, nullptr);
+    ASSERT_EQ(updated->block_devices.size(), static_cast<size_t>(1));
+    EXPECT_EQ(GetBlockDevicePartitionName(updated->block_devices[0]), "super_b");
+    ASSERT_TRUE(updated->groups.empty());
+    ASSERT_TRUE(updated->partitions.empty());
+    ASSERT_TRUE(updated->extents.empty());
+}
+
+TEST_F(LiblpTest, UpdateNonRetrofit) {
+    ON_CALL(*GetMockedPropertyFetcher(), GetBoolProperty("ro.boot.dynamic_partitions_retrofit", _))
+            .WillByDefault(Return(false));
+
     unique_fd fd = CreateFlashedDisk();
     ASSERT_GE(fd, 0);
 

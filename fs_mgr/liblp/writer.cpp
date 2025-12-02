@@ -267,7 +267,8 @@ bool FlashPartitionTable(const IPartitionOpener& opener, const std::string& supe
         return false;
     }
 
-    // Make sure the block device is writable.
+    // On retrofit devices, super_partition is system_other and might be set to readonly by
+    // fs_mgr_set_blk_ro(). Unset readonly so that fd can be written to.
     if (!SetBlockReadonly(fd.get(), false)) {
         PWARNING << __PRETTY_FUNCTION__ << " BLKROSET 0 failed: " << super_partition;
     }

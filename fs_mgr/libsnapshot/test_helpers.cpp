@@ -218,6 +218,7 @@ SnapshotTestPropertyFetcher::SnapshotTestPropertyFetcher(
     : properties_(std::move(props)) {
     properties_["ro.boot.slot_suffix"] = slot_suffix;
     properties_["ro.boot.dynamic_partitions"] = "true";
+    properties_["ro.boot.dynamic_partitions_retrofit"] = "false";
     properties_["ro.virtual_ab.enabled"] = "true";
 }
 

@@ -3907,6 +3907,14 @@ Return SnapshotManager::CreateUpdateSnapshots(const DeltaArchiveManifest& manife
     // free regions.
     UnmapAndDeleteCowPartition(current_metadata.get());
 
+    // Check that all these metadata is not retrofit dynamic partitions. Snapshots on
+    // devices with retrofit dynamic partitions does not make sense.
+    // This ensures that current_metadata->GetFreeRegions() uses the same device
+    // indices as target_metadata (i.e. 0 -> "super").
+    // This is also assumed in MapCowDevices() call below.
+    CHECK(current_metadata->GetBlockDevicePartitionName(0) == LP_METADATA_DEFAULT_PARTITION_NAME &&
+          target_metadata->GetBlockDevicePartitionName(0) == LP_METADATA_DEFAULT_PARTITION_NAME);
+
     const auto& dap_metadata = manifest.dynamic_partition_metadata();
 
     std::string vabc_disable_reason;
