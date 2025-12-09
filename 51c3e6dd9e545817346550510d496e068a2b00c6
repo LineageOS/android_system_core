@@ -16,6 +16,23 @@
       "message": "updated to use bools",
       "revId": "51c3e6dd9e545817346550510d496e068a2b00c6",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5cb1a960_057e1c2b",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2025-12-09T22:52:25Z",
+      "side": 1,
+      "message": "fixed it on moto 8250 and 7250",
+      "revId": "51c3e6dd9e545817346550510d496e068a2b00c6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
