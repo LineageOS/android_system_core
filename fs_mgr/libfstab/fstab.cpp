@@ -913,8 +913,15 @@ const FstabEntry* GetEntryForMountPoint(const Fstab* fstab, const std::string& p
 
 std::set<std::string> GetBootDevices() {
     std::set<std::string> boot_devices;
-    // First check bootconfig, then kernel commandline, then the device tree
+    // First check device tree, then kernel commandline, then bootconfig
     std::string value;
+    const std::string dt_file_name = GetAndroidDtDir() + "boot_devices";
+    if (ReadDtFile(dt_file_name, &value) || GetKernelCmdline("androidboot.boot_devices", &value)) {
+        auto boot_devices_list = Split(value, ",");
+        return {std::make_move_iterator(boot_devices_list.begin()),
+                std::make_move_iterator(boot_devices_list.end())};
+    }
+
     if (GetBootconfig("androidboot.boot_devices", &value) ||
         GetBootconfig("androidboot.boot_device", &value)) {
         // split by spaces and trim the trailing comma.
@@ -923,13 +930,6 @@ std::set<std::string> GetBootDevices() {
             boot_devices.emplace(device);
         }
         return boot_devices;
-    }
-
-    const std::string dt_file_name = GetAndroidDtDir() + "boot_devices";
-    if (GetKernelCmdline("androidboot.boot_devices", &value) || ReadDtFile(dt_file_name, &value)) {
-        auto boot_devices_list = Split(value, ",");
-        return {std::make_move_iterator(boot_devices_list.begin()),
-                std::make_move_iterator(boot_devices_list.end())};
     }
 
     ImportKernelCmdline([&](std::string key, std::string value) {
