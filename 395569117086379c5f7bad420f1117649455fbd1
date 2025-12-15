@@ -16,6 +16,23 @@
       "message": "Don\u0027t know if this is the best way to go about this",
       "revId": "395569117086379c5f7bad420f1117649455fbd1",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b69fb1a2_0a37d46f",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29415
+      },
+      "writtenOn": "2025-12-15T01:18:33Z",
+      "side": 1,
+      "message": "In fs_mgr/libfstab/boot_config.cpp:\n```\n// Tries to get the boot config value in device tree, properties, kernel bootconfig and kernel\n// cmdline (in that order).\n```\nSo this might actually be correct",
+      "revId": "395569117086379c5f7bad420f1117649455fbd1",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
