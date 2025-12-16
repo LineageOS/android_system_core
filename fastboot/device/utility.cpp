@@ -203,6 +203,7 @@ std::string GetSuperSlotSuffix(FastbootDevice* device, const std::string& partit
     // If the super partition does not have a slot suffix, this is not a
     // retrofit device, and we should take the current slot.
     std::string current_slot_suffix = device->GetCurrentSlot();
+    uint32_t current_slot_number = SlotNumberForSlotSuffix(current_slot_suffix);
     std::string super_partition = fs_mgr_get_super_partition_name();
     if (GetPartitionSlotSuffix(super_partition).empty()) {
         return current_slot_suffix;
