@@ -52,7 +52,7 @@ bool OpenLogicalPartition(FastbootDevice* device, const std::string& partition_n
                           PartitionHandle* handle) {
     std::string slot_suffix = GetSuperSlotSuffix(device, partition_name);
     uint32_t slot_number = SlotNumberForSlotSuffix(slot_suffix);
-    auto path = FindPhysicalPartition(fs_mgr_get_super_partition_name());
+    auto path = FindPhysicalPartition(fs_mgr_get_super_partition_name(slot_number));
     if (!path) {
         return false;
     }
@@ -117,7 +117,7 @@ static const LpMetadataPartition* FindLogicalPartition(const LpMetadata& metadat
 bool LogicalPartitionExists(FastbootDevice* device, const std::string& name, bool* is_zero_length) {
     std::string slot_suffix = GetSuperSlotSuffix(device, name);
     uint32_t slot_number = SlotNumberForSlotSuffix(slot_suffix);
-    auto path = FindPhysicalPartition(fs_mgr_get_super_partition_name());
+    auto path = FindPhysicalPartition(fs_mgr_get_super_partition_name(slot_number));
     if (!path) {
         return false;
     }
@@ -164,17 +164,31 @@ std::vector<std::string> ListPartitions(FastbootDevice* device) {
         }
     }
 
+    // Find metadata in each super partition (on retrofit devices, there will
+    // be two).
+    std::vector<std::unique_ptr<LpMetadata>> metadata_list;
+
     uint32_t current_slot = SlotNumberForSlotSuffix(device->GetCurrentSlot());
-    std::string super_name = fs_mgr_get_super_partition_name();
-    auto metadata = ReadMetadata(super_name, current_slot);
-    if (!metadata) {
-        return {};
+    std::string super_name = fs_mgr_get_super_partition_name(current_slot);
+    if (auto metadata = ReadMetadata(super_name, current_slot)) {
+        metadata_list.emplace_back(std::move(metadata));
     }
 
-    for (const auto& partition : metadata->partitions) {
-        std::string partition_name = GetPartitionName(partition);
-        if (std::find(partitions.begin(), partitions.end(), partition_name) == partitions.end()) {
-            partitions.emplace_back(partition_name);
+    uint32_t other_slot = (current_slot == 0) ? 1 : 0;
+    std::string other_super = fs_mgr_get_super_partition_name(other_slot);
+    if (super_name != other_super) {
+        if (auto metadata = ReadMetadata(other_super, other_slot)) {
+            metadata_list.emplace_back(std::move(metadata));
+        }
+    }
+
+    for (const auto& metadata : metadata_list) {
+        for (const auto& partition : metadata->partitions) {
+            std::string partition_name = GetPartitionName(partition);
+            if (std::find(partitions.begin(), partitions.end(), partition_name) ==
+                partitions.end()) {
+                partitions.emplace_back(partition_name);
+            }
         }
     }
     return partitions;
@@ -203,7 +217,8 @@ std::string GetSuperSlotSuffix(FastbootDevice* device, const std::string& partit
     // If the super partition does not have a slot suffix, this is not a
     // retrofit device, and we should take the current slot.
     std::string current_slot_suffix = device->GetCurrentSlot();
-    std::string super_partition = fs_mgr_get_super_partition_name();
+    uint32_t current_slot_number = SlotNumberForSlotSuffix(current_slot_suffix);
+    std::string super_partition = fs_mgr_get_super_partition_name(current_slot_number);
     if (GetPartitionSlotSuffix(super_partition).empty()) {
         return current_slot_suffix;
     }
