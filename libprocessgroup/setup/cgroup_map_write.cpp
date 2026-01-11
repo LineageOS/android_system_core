@@ -174,7 +174,7 @@ static bool ActivateV2CgroupController(const CgroupDescriptor& descriptor) {
 
     if (!Mkdir(controller->path(), descriptor.mode(), descriptor.uid(), descriptor.gid())) {
         LOG(ERROR) << "Failed to create directory for " << controller->name() << " cgroup";
-        return descriptor.controller()->flags() & CGROUPRC_CONTROLLER_FLAG_OPTIONAL;
+        return false;
     }
 
     return ::ActivateControllers(controller->path(), {{controller->name(), descriptor}});
@@ -291,8 +291,8 @@ bool CgroupSetup() {
         }
 
         if (!SetupCgroup(descriptor)) {
-            LOG(ERROR) << "Failed to setup " << name << " cgroup";
-            return false;
+            // issue a warning and proceed with the next cgroup
+            LOG(WARNING) << "Failed to setup " << name << " cgroup";
         }
     }
 
