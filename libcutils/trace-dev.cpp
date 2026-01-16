@@ -36,7 +36,11 @@ static void atrace_init_once()
     }
 
     if (atrace_marker_fd == -1) {
+#ifdef __ANDROID_RECOVERY__
+        ALOGV("Error opening trace file: %s (%d)", strerror(errno), errno);
+#else
         ALOGE("Error opening trace file: %s (%d)", strerror(errno), errno);
+#endif
         atrace_enabled_tags = 0;
     } else {
       atrace_enabled_tags = atrace_get_property();
