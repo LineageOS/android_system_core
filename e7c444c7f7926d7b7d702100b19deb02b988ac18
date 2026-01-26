@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c6e6744a_505667ed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-01-26T16:47:21Z",
+      "side": 1,
+      "message": "You really need a retry? Don\u0027t you know beforehand when a partition is RO?",
+      "revId": "e7c444c7f7926d7b7d702100b19deb02b988ac18",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
