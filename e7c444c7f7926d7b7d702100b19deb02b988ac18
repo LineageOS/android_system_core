@@ -52,6 +52,24 @@
       "parentUuid": "8fb64f39_699b81f7",
       "revId": "e7c444c7f7926d7b7d702100b19deb02b988ac18",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "99e6052c_67b5c7e2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32245
+      },
+      "writtenOn": "2026-01-26T18:00:09Z",
+      "side": 1,
+      "message": "uh oh yeah just checked my `generic_x86_64_pc` dt, I wasn\u0027t mounting system as RW, it was needed for bind mounting, mounting the base partition containing the images, mounting virtiofs, etc",
+      "parentUuid": "5e652b99_f0f639bd",
+      "revId": "e7c444c7f7926d7b7d702100b19deb02b988ac18",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
