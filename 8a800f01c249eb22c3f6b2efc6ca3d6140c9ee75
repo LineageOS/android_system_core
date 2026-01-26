@@ -52,6 +52,24 @@
       "parentUuid": "7e3208d6_18761c64",
       "revId": "8a800f01c249eb22c3f6b2efc6ca3d6140c9ee75",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bb0635d6_94e38b42",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32245
+      },
+      "writtenOn": "2026-01-26T18:01:52Z",
+      "side": 1,
+      "message": "well it just defaults to 0, as declared on the header?",
+      "parentUuid": "b0a894de_599c61e7",
+      "revId": "8a800f01c249eb22c3f6b2efc6ca3d6140c9ee75",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
