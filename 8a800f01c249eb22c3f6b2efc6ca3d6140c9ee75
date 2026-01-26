@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0664e62_d29c8cbc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-01-26T16:43:36Z",
+      "side": 1,
+      "message": "Can\u0027t you just not specify `max_comp_streams` in your fstab entry?",
+      "revId": "8a800f01c249eb22c3f6b2efc6ca3d6140c9ee75",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
