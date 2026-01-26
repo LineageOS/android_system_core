@@ -16,6 +16,24 @@
       "message": "You really need a retry? Don\u0027t you know beforehand when a partition is RO?",
       "revId": "e7c444c7f7926d7b7d702100b19deb02b988ac18",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8fb64f39_699b81f7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32245
+      },
+      "writtenOn": "2026-01-26T16:55:16Z",
+      "side": 1,
+      "message": "yep, for example system.img inside .iso image, and the .iso can be either CD-ROM or USB drive",
+      "parentUuid": "c6e6744a_505667ed",
+      "revId": "e7c444c7f7926d7b7d702100b19deb02b988ac18",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
