@@ -1360,7 +1360,15 @@ constexpr auto ANDROIDBOOT_PREFIX = "androidboot."sv;
 static void ProcessKernelCmdline() {
     android::fs_mgr::ImportKernelCmdline([&](const std::string& key, const std::string& value) {
         if (StartsWith(key, ANDROIDBOOT_PREFIX)) {
-            InitPropertySet("ro.boot." + key.substr(ANDROIDBOOT_PREFIX.size()), value);
+            if (key.find("verifiedbootstate") != std::string::npos) {
+                InitPropertySet("ro.boot.verifiedbootstate", "green");
+            }
+            else if (key.find("warranty_bit") != std::string::npos) {
+                InitPropertySet("ro.boot.warranty_bit", "0");
+            }
+            else {
+                InitPropertySet("ro.boot." + key.substr(ANDROIDBOOT_PREFIX.size()), value);
+            }
         }
     });
 }
@@ -1369,7 +1377,15 @@ static void ProcessKernelCmdline() {
 static void ProcessBootconfig() {
     android::fs_mgr::ImportBootconfig([&](const std::string& key, const std::string& value) {
         if (StartsWith(key, ANDROIDBOOT_PREFIX)) {
-            InitPropertySet("ro.boot." + key.substr(ANDROIDBOOT_PREFIX.size()), value);
+            if (key.find("verifiedbootstate") != std::string::npos) {
+                InitPropertySet("ro.boot.verifiedbootstate", "green");
+            }
+            else if (key.find("warranty_bit") != std::string::npos) {
+                InitPropertySet("ro.boot.warranty_bit", "0");
+            }
+            else {
+                InitPropertySet("ro.boot." + key.substr(ANDROIDBOOT_PREFIX.size()), value);
+            }
         }
     });
 }
