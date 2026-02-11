@@ -930,8 +930,20 @@ const FstabEntry* GetEntryForMountPoint(const Fstab* fstab, const std::string& p
 
 std::set<std::string> GetBootDevices() {
     std::set<std::string> boot_devices;
-    // First check bootconfig, then kernel commandline, then the device tree
     std::string value;
+
+   // Determine boot_device(s) by checking device tree, bootconfig and then cmdline.
+   // Device tree is prioritized first as values from bootconfig or cmdline get overriden the
+   // bootloader. This allows platforms to override when the value from bootloader is no longer
+   // valid (e.g. if soc becomes soc@0).
+
+    const std::string dt_file_name = GetAndroidDtDir() + "boot_devices";
+    if (ReadDtFile(dt_file_name, &value)) {
+        auto boot_devices_list = Split(value, ",");
+        return {std::make_move_iterator(boot_devices_list.begin()),
+                std::make_move_iterator(boot_devices_list.end())};
+    }
+
     if (GetBootconfig("androidboot.boot_devices", &value) ||
         GetBootconfig("androidboot.boot_device", &value)) {
         // split by spaces and trim the trailing comma.
@@ -942,8 +954,7 @@ std::set<std::string> GetBootDevices() {
         return boot_devices;
     }
 
-    const std::string dt_file_name = GetAndroidDtDir() + "boot_devices";
-    if (GetKernelCmdline("androidboot.boot_devices", &value) || ReadDtFile(dt_file_name, &value)) {
+    if (GetKernelCmdline("androidboot.boot_devices", &value)) {
         auto boot_devices_list = Split(value, ",");
         return {std::make_move_iterator(boot_devices_list.begin()),
                 std::make_move_iterator(boot_devices_list.end())};
