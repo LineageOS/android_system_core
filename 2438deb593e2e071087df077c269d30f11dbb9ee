@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "6352be21_5be8268c",
+        "filename": "init/block_dev_initializer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2026-02-15T07:04:18Z",
+      "side": 1,
+      "message": "maybe too aggressive? Tune it down?",
+      "range": {
+        "startLine": 194,
+        "startChar": 47,
+        "endLine": 194,
+        "endChar": 51
+      },
+      "revId": "2438deb593e2e071087df077c269d30f11dbb9ee",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ebfd6f92_656f663a",
+        "filename": "init/devices.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2026-02-15T07:04:18Z",
+      "side": 1,
+      "message": "tab -\u003e spaces",
+      "range": {
+        "startLine": 229,
+        "startChar": 0,
+        "endLine": 229,
+        "endChar": 1
+      },
+      "revId": "2438deb593e2e071087df077c269d30f11dbb9ee",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
