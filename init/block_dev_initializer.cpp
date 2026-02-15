@@ -154,7 +154,7 @@ ListenerAction BlockDevInitializer::HandleUevent(const Uevent& uevent,
     // or possibly not all the partitions that we need to wait for are on the
     // specified boot device. Thus, only require partitions to be on the boot
     // device in "strict" mode, which should be used on newer systems.
-    if (device_handler_->IsBootDevice(uevent) || !device_handler_->IsBootDeviceStrict()) {
+    if (device_handler_->IsBootDevice(uevent)) {
         devices->erase(iter);
     }
 
@@ -191,7 +191,7 @@ bool BlockDevInitializer::InitDevices(std::set<std::string> devices) {
                   << ": partition(s) not found in /sys, waiting for their uevent(s): "
                   << android::base::Join(devices, ", ");
         Timer t;
-        uevent_listener_.Poll(uevent_callback, 10s);
+        uevent_listener_.Poll(uevent_callback, 100s);
         LOG(INFO) << "Wait for partitions returned after " << t;
     }
 
