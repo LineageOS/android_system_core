@@ -39,6 +39,7 @@ bool SetActiveHandler(FastbootDevice* device, const std::vector<std::string>& ar
 bool ShutDownHandler(FastbootDevice* device, const std::vector<std::string>& args);
 bool RebootHandler(FastbootDevice* device, const std::vector<std::string>& args);
 bool RebootBootloaderHandler(FastbootDevice* device, const std::vector<std::string>& args);
+bool RebootEdlHandler(FastbootDevice* device, const std::vector<std::string>& args);
 bool RebootFastbootHandler(FastbootDevice* device, const std::vector<std::string>& args);
 bool RebootRecoveryHandler(FastbootDevice* device, const std::vector<std::string>& args);
 bool GetVarHandler(FastbootDevice* device, const std::vector<std::string>& args);

@@ -403,6 +403,14 @@ bool RebootBootloaderHandler(FastbootDevice* device, const std::vector<std::stri
     return result;
 }
 
+bool RebootBootloaderHandler(FastbootDevice* device, const std::vector<std::string>& /* args */) {
+    auto result = device->WriteStatus(FastbootResult::OKAY, "Rebooting edl");
+    android::base::SetProperty(ANDROID_RB_PROPERTY, "reboot,edl");
+    device->CloseDevice();
+    TEMP_FAILURE_RETRY(pause());
+    return result;
+}
+
 bool RebootFastbootHandler(FastbootDevice* device, const std::vector<std::string>& /* args */) {
     auto result = device->WriteStatus(FastbootResult::OKAY, "Rebooting fastboot");
     android::base::SetProperty(ANDROID_RB_PROPERTY, "reboot,fastboot");

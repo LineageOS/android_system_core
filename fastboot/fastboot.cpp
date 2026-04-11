@@ -2459,6 +2459,8 @@ int FastBootTool::Main(int argc, char* argv[]) {
             if (!args.empty()) syntax_error("junk after reboot command");
         } else if (command == FB_CMD_REBOOT_BOOTLOADER) {
             tasks.emplace_back(std::make_unique<RebootTask>(fp.get(), "bootloader"));
+        } else if (command == FB_CMD_REBOOT_EDL) {
+            tasks.emplace_back(std::make_unique<RebootTask>(fp.get(), "edl"));
         } else if (command == FB_CMD_REBOOT_RECOVERY) {
             tasks.emplace_back(std::make_unique<RebootTask>(fp.get(), "recovery"));
         } else if (command == FB_CMD_REBOOT_FASTBOOT) {
