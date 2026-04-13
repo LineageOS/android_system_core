@@ -201,7 +201,26 @@ static bool is_memfd_fd(int fd) {
         ALOGE("readlink(%s) failed: %m", fd_path.c_str());
         return false;
     }
-    return result.starts_with("/memfd:");
+
+    if (!result.starts_with("/memfd:")) {
+        return false;
+    }
+
+    // b/498720726: Ensure that the memfd has the same restrictions on its size that an ashmem fd
+    // would. Otherwise, memfds that aren't sealed against size changes can be treated as valid
+    // ashmem fds. The size of the memory associated with those fds can then be changed while a
+    // process is using it, leading to time of check to time of use issues.
+    int seals = fcntl(fd, F_GET_SEALS);
+    if (seals == -1) {
+        ALOGE("is_memfd_fd(%d): F_GET_SEALS failed: %m", fd);
+        return false;
+    }
+
+    if ((seals & (F_SEAL_GROW | F_SEAL_SHRINK)) != (F_SEAL_GROW | F_SEAL_SHRINK)) {
+        return false;
+    }
+
+    return true;
 }
 
 int ashmem_valid(int fd) {
