@@ -559,3 +559,20 @@ TEST_F(MemfdTest, AshmemCompatUnpinningTest) {
     ASSERT_EQ(0, ioctl(fd, ASHMEM_PURGE_ALL_CACHES, 0));
     ASSERT_EQ(ASHMEM_NOT_PURGED, ioctl(fd, ASHMEM_PIN, &pin));
 }
+
+TEST(AshmemValidTest, UnsealedMemfdTest) {
+    // This code needs to build on API levels before 30, so we can't use the libc wrapper.
+    unique_fd fd(memfd_create("none", MFD_CLOEXEC | MFD_ALLOW_SEALING));
+    ASSERT_TRUE(fd >= 0);
+    // memfds without F_SEAL_GROW and F_SEAL_SHRINK applied should not be valid.
+    ASSERT_FALSE(ashmem_valid(fd));
+
+    // All or nothing; not just one seal.
+    ASSERT_EQ(fcntl(fd, F_ADD_SEALS, F_SEAL_GROW), 0);
+    ASSERT_FALSE(ashmem_valid(fd));
+
+    unique_fd fd2(memfd_create("none", MFD_CLOEXEC | MFD_ALLOW_SEALING));
+    ASSERT_TRUE(fd2 >= 0);
+    ASSERT_EQ(fcntl(fd2, F_ADD_SEALS, F_SEAL_SHRINK), 0);
+    ASSERT_FALSE(ashmem_valid(fd2));
+}
