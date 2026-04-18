@@ -679,9 +679,16 @@ int BatteryMonitor::getBatteryHealthData(int id) {
     if (id == BATTERY_PROP_STATE_OF_HEALTH) {
         if (!mHealthdConfig->batteryStateOfHealthPath.empty())
             return getIntField(mHealthdConfig->batteryStateOfHealthPath);
+        // Estimate SoH from charge_full / charge_full_design when the
+        // fuel gauge doesn't expose a dedicated SoH sysfs node.
+        if (mHealthInfo->batteryFullChargeDesignCapacityUah > 0 &&
+                mHealthInfo->batteryFullChargeUah > 0) {
+            return mHealthInfo->batteryFullChargeUah * 100 /
+                    mHealthInfo->batteryFullChargeDesignCapacityUah;
+        }
     }
     if (id == BATTERY_PROP_PART_STATUS) {
-        return static_cast<int>(BatteryPartStatus::UNSUPPORTED);
+        return static_cast<int>(BatteryPartStatus::ORIGINAL);
     }
     return 0;
 }
