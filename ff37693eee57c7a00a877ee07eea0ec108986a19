@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2470a65c_b248bbb1",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 32245
+      },
+      "writtenOn": "2026-04-28T15:35:27Z",
+      "side": 1,
+      "message": "It\u0027s rather \"DTS -\u003e bootconfig -\u003e kernel commandline\", other than that, fine",
+      "revId": "ff37693eee57c7a00a877ee07eea0ec108986a19",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
