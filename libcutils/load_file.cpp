@@ -20,11 +20,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdint.h>
 
 void *load_file(const char *fn, unsigned *_sz)
 {
     char *data;
-    int sz;
+    off_t sz;
     int fd;
 
     data = 0;
@@ -34,16 +35,18 @@ void *load_file(const char *fn, unsigned *_sz)
     sz = lseek(fd, 0, SEEK_END);
     if(sz < 0) goto oops;
 
+    if (sz > SSIZE_MAX) goto oops;
+
     if(lseek(fd, 0, SEEK_SET) != 0) goto oops;
 
-    data = (char*) malloc(sz + 1);
+    data = (char*) malloc((size_t)sz + 1);
     if(data == 0) goto oops;
 
-    if(read(fd, data, sz) != sz) goto oops;
+    if(read(fd, data, (size_t)sz) != (ssize_t)sz) goto oops;
     close(fd);
     data[sz] = 0;
 
-    if(_sz) *_sz = sz;
+    if(_sz) *_sz = (unsigned)sz;
     return data;
 
 oops:

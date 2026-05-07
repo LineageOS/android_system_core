@@ -33,6 +33,8 @@
 
 #define TIPC_DEFAULT_DEVNAME "/dev/trusty-ipc-dev0"
 
+#define MAX_MSG_SIZE (64 * 1024)
+
 /* clang-format off */
 #define BENCH_RESULT_TPL                                    \
 "{"                                                         \
@@ -187,6 +189,10 @@ static void parse_options(int argc, char** argv, struct tipc_test_params* params
 
             case 'm':
                 params->msgsize = atoi(optarg);
+                if (params->msgsize > MAX_MSG_SIZE) {
+                    fprintf(stderr, "msgsize too large (max %d)\n", MAX_MSG_SIZE);
+                    print_usage_and_exit(argv[0], 1, false);
+                }
                 break;
 
             case 'b':

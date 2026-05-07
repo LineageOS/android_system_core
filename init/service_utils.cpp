@@ -16,6 +16,7 @@
 
 #include "service_utils.h"
 
+#include <atomic>
 #include <fcntl.h>
 #include <grp.h>
 #include <map>
@@ -104,8 +105,8 @@ Result<void> SetUpPidNamespace(const char* name) {
 
     if (child_pid > 0) {
         // So that we exit with the right status.
-        static int init_exitstatus = 0;
-        signal(SIGTERM, [](int) { _exit(init_exitstatus); });
+        static std::atomic<int> init_exitstatus = 0;
+        signal(SIGTERM, [](int) { _exit(init_exitstatus.load()); });
 
         pid_t waited_pid;
         int status;
