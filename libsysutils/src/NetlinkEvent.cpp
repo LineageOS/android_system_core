@@ -413,6 +413,9 @@ bool NetlinkEvent::parseNfPacketMessage(struct nlmsghdr *nh) {
 
     size_t hexSize = 5 + (len * 2);
     char* hex = (char*)calloc(1, hexSize);
+    if (hex == NULL) {
+        return false;
+    }
     strlcpy(hex, "HEX=", hexSize);
     for (int i = 0; i < len; i++) {
         hex[4 + (i * 2)] = "0123456789abcdef"[(raw[i] >> 4) & 0xf];

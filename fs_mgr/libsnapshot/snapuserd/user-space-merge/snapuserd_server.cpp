@@ -26,6 +26,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <atomic>
+
 #include <android-base/cmsg.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
@@ -38,6 +40,8 @@
 
 namespace android {
 namespace snapshot {
+
+extern std::atomic<int> g_signal_received;
 
 using namespace std::string_literals;
 
@@ -274,8 +278,15 @@ bool UserSnapshotServer::Run() {
     LOG(INFO) << "Now listening on snapuserd socket";
 
     while (!IsTerminating()) {
-        int rv = TEMP_FAILURE_RETRY(poll(watched_fds_.data(), watched_fds_.size(), -1));
+        int rv = poll(watched_fds_.data(), watched_fds_.size(), -1);
         if (rv < 0) {
+            if (errno == EINTR) {
+                int sig = g_signal_received.load(std::memory_order_relaxed);
+                if (sig != 0) {
+                    Interrupt();
+                }
+                continue;
+            }
             PLOG(ERROR) << "poll failed";
             return false;
         }
