@@ -361,7 +361,7 @@ int FirstStageMain(int argc, char** argv) {
     std::string cmdline;
     android::base::ReadFileToString("/proc/cmdline", &cmdline);
     // Don't expose the raw bootconfig to unprivileged processes.
-    chmod("/proc/bootconfig", 0440);
+    CHECKCALL(chmod("/proc/bootconfig", 0440));
     std::string bootconfig;
     android::base::ReadFileToString("/proc/bootconfig", &bootconfig);
     gid_t groups[] = {AID_READPROC};

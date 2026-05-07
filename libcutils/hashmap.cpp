@@ -151,19 +151,15 @@ void hashmapFree(Hashmap* map) {
     free(map);
 }
 
-#ifdef __clang__
-__attribute__((no_sanitize("integer")))
-#endif
-/* FIXME: relies on signed integer overflow, which is undefined behavior */
 int hashmapHash(void* key, size_t keySize) {
-    int h = keySize;
-    char* data = (char*) key;
+    unsigned int h = (unsigned int)keySize;
+    unsigned char* data = (unsigned char*) key;
     size_t i;
     for (i = 0; i < keySize; i++) {
         h = h * 31 + *data;
         data++;
     }
-    return h;
+    return (int)h;
 }
 
 static Entry* createEntry(void* key, int hash, void* value) {

@@ -20,6 +20,8 @@
 #include <gflags/gflags.h>
 #include <snapuserd/snapuserd_client.h>
 
+#include <atomic>
+
 #include "snapuserd_daemon.h"
 
 DEFINE_string(socket, android::snapshot::kSnapuserdSocket, "Named socket or socket path.");
@@ -167,27 +169,10 @@ void Daemon::ReceivedSocketSignal() {
     }
 }
 
+static std::atomic<int> g_signal_received{0};
+
 void Daemon::SignalHandler(int signal) {
-    LOG(DEBUG) << "Snapuserd received signal: " << signal;
-    switch (signal) {
-        case SIGINT:
-        case SIGTERM: {
-            Daemon::Instance().Interrupt();
-            break;
-        }
-        case SIGPIPE: {
-            LOG(ERROR) << "Received SIGPIPE signal";
-            break;
-        }
-        case SIGUSR1: {
-            LOG(INFO) << "Received SIGUSR1, attaching to proxy socket";
-            Daemon::Instance().ReceivedSocketSignal();
-            break;
-        }
-        default:
-            LOG(ERROR) << "Received unknown signal " << signal;
-            break;
-    }
+    g_signal_received.store(signal, std::memory_order_relaxed);
 }
 
 }  // namespace snapshot
