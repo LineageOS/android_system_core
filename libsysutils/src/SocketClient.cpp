@@ -131,7 +131,11 @@ int SocketClient::sendCode(int code) {
 }
 
 char *SocketClient::quoteArg(const char *arg) {
-    int len = strlen(arg);
+    size_t len = strlen(arg);
+    if (len > (SIZE_MAX / 2) - 3) {
+        SLOGW("argument length overflow (%zu)", len);
+        return nullptr;
+    }
     char *result = (char *)malloc(len * 2 + 3);
     char *current = result;
     const char *end = arg + len;
