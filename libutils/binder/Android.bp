@@ -53,6 +53,7 @@ cc_defaults {
         "-Winvalid-offsetof",
         "-Wsequence-point",
         "-Wzero-as-null-pointer-constant",
+	"-DANDROID_UTILS_CALLSTACK_ENABLED=0",
     ],
 
     afdo: true,
