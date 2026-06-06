@@ -105,6 +105,24 @@
       "parentUuid": "01b3516e_f435ed33",
       "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6399a231_68605a39",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 37151
+      },
+      "writtenOn": "2026-06-06T13:06:16Z",
+      "side": 1,
+      "message": "I\u0027ll keep that in mind since next time, thank you (I\u0027m not properly used to do informative git commits, i apologise for that). And I\u0027ll try to explain in very best way I can. Anyways, the cost comes from libutils/binder/RefBase.cpp. In RefBase, the explicit destruction only logs a one-line ALOGW and is guarded only by if ANDROID_UTILS_CALLSTACK_ENABLED (https://cs.android.com/android/platform/superproject/+/android-14.0.0_r75:system/core/libutils/binder/RefBase.cpp;l\u003d793). It\u0027s the full native unwind and symbolization that I was talking about. It does exist in the current android 16 as well (https://cs.android.com/android/platform/superproject/+/android-latest-release:system/core/libutils/binder/RefBase.cpp;l\u003d804;). In the same RefBase.cpp file, on a14, on lines 58-65, the android_utils_callstack_enabled is defined and on a16, it\u0027s defined on lines 59-66. __linux__ makes it default to one. But only difference occurs in libutils/binder/Android.bp, as you pointed out on line 56 which only appears in libutils_binder_sdk. But, in a16, there is no any flags in the defaults chain that actually builds the platform libutils. which is (libutils_binder_impl_defaults_nodeps_no_apex \u003e _nodeps \u003e _defaults \u003e libutils_binder).\nThis is not by any LLM either, i just want to explain as properly as I understood it.",
+      "parentUuid": "b8eabd0f_0772f088",
+      "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
