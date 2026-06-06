@@ -141,6 +141,24 @@
       "parentUuid": "6399a231_68605a39",
       "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "57b29d42_38d23b56",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 37151
+      },
+      "writtenOn": "2026-06-06T13:19:40Z",
+      "side": 1,
+      "message": "You\u0027re right, I overstated it. the a14 and 16 are identical, libutils_binder_sdk is the only target with the flag in both so platform libutils compiles it on both of them. The cost was always present. I apologize for framing it as \"after a14\". The user-visible lag that I mentioned is on the vendor side hitting that RefBase branch (outside of this repo, again, sorry for the overstating it as this is the culprit), this patch just stops the platform from paying ~20ms symbolization cost per hit that it was never meant to pay.",
+      "parentUuid": "05448b11_3d2a8d1d",
+      "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
