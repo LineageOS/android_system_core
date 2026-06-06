@@ -34,6 +34,24 @@
       "parentUuid": "db690e79_33c67ad4",
       "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6acc5cdf_d3935a82",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 37151
+      },
+      "writtenOn": "2026-06-06T10:46:07Z",
+      "side": 1,
+      "message": "I\u0027m sorry for the broken response.\nYes, you have a fair point. But maybe pixel devices don\u0027t hit this path heavily enough to cause isuses. But in our cases, it hits heavily, like 200 times. With this cflag back, we lose the stack trace in logcat but we still keep the one liner warning.",
+      "parentUuid": "f088db81_082547b2",
+      "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
