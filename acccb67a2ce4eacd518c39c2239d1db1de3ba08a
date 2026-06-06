@@ -69,6 +69,24 @@
       "message": "Hi, per charter rules, you must mention the usage of AI tools in the commit message:\n\n```\nAssisted-by: AGENT_NAME:MODEL_VERSION\n```\n\nThanks!",
       "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "01b3516e_f435ed33",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 37151
+      },
+      "writtenOn": "2026-06-06T11:37:59Z",
+      "side": 1,
+      "message": "This finding isn\u0027t done by any AI tool. I have the issue of overhead and I simply went back and back to find out the cause. Tracing back to system/core to which I compared with android 14 and yes, found that missing cflag. However, I did use AI to refine my commit message only because the original commit message I had was a little unorthodox.",
+      "parentUuid": "6412a088_dc559664",
+      "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
