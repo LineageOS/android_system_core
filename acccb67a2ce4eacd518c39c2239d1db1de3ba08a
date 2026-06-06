@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "db690e79_33c67ad4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-06-06T10:25:32Z",
+      "side": 1,
+      "message": "While I get the meaning of the change, it seems to me this isn\u0027t a \"user build\" thing, google decided callstack would be enabled in all cases except for sdk usages.\n\nI agree it\u0027s pretty stupid to have it always on, but there must be a reason",
+      "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
