@@ -52,6 +52,23 @@
       "parentUuid": "f088db81_082547b2",
       "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "6412a088_dc559664",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 25732
+      },
+      "writtenOn": "2026-06-06T11:32:21Z",
+      "side": 1,
+      "message": "Hi, per charter rules, you must mention the usage of AI tools in the commit message:\n\n```\nAssisted-by: AGENT_NAME:MODEL_VERSION\n```\n\nThanks!",
+      "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
