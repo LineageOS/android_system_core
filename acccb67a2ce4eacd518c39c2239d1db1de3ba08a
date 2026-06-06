@@ -87,6 +87,24 @@
       "parentUuid": "6412a088_dc559664",
       "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b8eabd0f_0772f088",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 11883
+      },
+      "writtenOn": "2026-06-06T12:26:55Z",
+      "side": 1,
+      "message": "Regardless, I\u0027d prefer an unorthodox commit msg over something an LLM wrote 😉\nWith that said, even on A14 the flag is only set for libutils_binder_sdk for your point is moot\n\nhttps://cs.android.com/android/platform/superproject/+/android-14.0.0_r75:system/core/libutils/binder/Android.bp;l\u003d56\n\nPlease link me something I can actually work on",
+      "parentUuid": "01b3516e_f435ed33",
+      "revId": "acccb67a2ce4eacd518c39c2239d1db1de3ba08a",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
