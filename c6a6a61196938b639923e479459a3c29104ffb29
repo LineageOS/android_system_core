@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ee969da1_7c6e70fb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29080
+      },
+      "writtenOn": "2026-06-12T17:59:28Z",
+      "side": 1,
+      "message": "https://android-review.googlesource.com/c/platform/system/core/+/4006200\n\n\"David has cherry-picked it to internal main for Android 17.\"",
+      "revId": "c6a6a61196938b639923e479459a3c29104ffb29",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
