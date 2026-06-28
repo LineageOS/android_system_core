@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "46b145ed_07baeb01",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29551
+      },
+      "writtenOn": "2026-06-28T06:32:19Z",
+      "side": 1,
+      "message": "Hi, I think this patch can be merged into the Lineage 23.2 branch, given that f2fs is the default filesystem used for userdata on modern devices.",
+      "revId": "aba3c6ad0d121b6961451b5f901cd10d04cb0110",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
