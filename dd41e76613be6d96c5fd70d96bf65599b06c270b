@@ -51,6 +51,24 @@
       "message": "Tbh the original commit adding the kver checks just says \"The tracing instance takes extra RAM and is not needed on devices running older kernels.\" and the thing this prop triggers mentions KFENCE which is now enforced via FCM. So, I think this commit can be dropped and/or also drop the 4.19/5.4 forced prop. Then we can decide whether to leave that as-is or set bootreceiver.enable\u003d0 globally",
       "revId": "dd41e76613be6d96c5fd70d96bf65599b06c270b",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a5130ba_07190aa7",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2026-07-02T05:19:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6e266d5f_77bdc781",
+      "revId": "dd41e76613be6d96c5fd70d96bf65599b06c270b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
