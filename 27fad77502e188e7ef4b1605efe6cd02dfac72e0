@@ -16,6 +16,24 @@
       "message": "This is no longer part of CLO codebase (compared with LA.QSSI.17.0.r1-08000-qssi.0).",
       "revId": "27fad77502e188e7ef4b1605efe6cd02dfac72e0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eb417345_13904763",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4550
+      },
+      "writtenOn": "2026-07-12T22:04:36Z",
+      "side": 1,
+      "message": "Yeah it hasn\u0027t been there for a while iirc we just kept it for old devices/kernels",
+      "parentUuid": "19e882d8_e4f33b7b",
+      "revId": "27fad77502e188e7ef4b1605efe6cd02dfac72e0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
