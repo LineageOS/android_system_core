@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a411611_072ed655",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 13648
+      },
+      "writtenOn": "2026-07-12T23:47:10Z",
+      "side": 1,
+      "message": "I\u0027d pick this instead: https://git.codelinaro.org/clo/la/platform/system/core/-/commit/8a5e508acf534117307de081a0402dd20f0cfae7",
+      "revId": "63d449aaeecd04377d4f636d16d95f34ea3ac430",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
