@@ -159,6 +159,24 @@
       "parentUuid": "24820d1b_aa0d9786",
       "revId": "35d08d69a003015c42f5482c27325d486b965df6",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "eeda2dd9_87141c19",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4550
+      },
+      "writtenOn": "2026-07-26T17:21:41Z",
+      "side": 1,
+      "message": "Debugging offline charging can be done in userspace something like adb shell stop \u0026\u0026 start charger",
+      "parentUuid": "6c9cb396_fa3574f2",
+      "revId": "35d08d69a003015c42f5482c27325d486b965df6",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
