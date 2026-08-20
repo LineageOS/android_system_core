@@ -16,6 +16,24 @@
       "message": "Should we drop it or not?",
       "revId": "bae12acfc9eafafce8268cfe735ec9cf4b20d50e",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9ab3e9f7_0fc970f2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4550
+      },
+      "writtenOn": "2026-08-20T19:50:44Z",
+      "side": 1,
+      "message": "We can\u0027t drop it if we ship devices with non-dynamic partitions that want fastbootd. The same change exists in recovery.",
+      "parentUuid": "c3ccef69_4cb653ec",
+      "revId": "bae12acfc9eafafce8268cfe735ec9cf4b20d50e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
