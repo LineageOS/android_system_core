@@ -246,9 +246,9 @@ bool GetSlotSuccessful(FastbootDevice* device, const std::vector<std::string>& a
         return false;
     }
     if (boot_control_hal->IsSlotMarkedSuccessful(slot).value_or(false)) {
-        *message = "no";
-    } else {
         *message = "yes";
+    } else {
+        *message = "no";
     }
     return true;
 }
