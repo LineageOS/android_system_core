@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ba24d860_be36bac6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 34512
+      },
+      "writtenOn": "2026-09-07T20:55:18Z",
+      "side": 1,
+      "message": "would it not be better submitting this to AOSP gerrit?",
+      "revId": "f5fee73ed66726a1da080a414f5d93463e28444e",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
