@@ -108,6 +108,9 @@ EnforcingStatus StatusFromProperty() {
     if (android::fs_mgr::GetBootconfig("androidboot.selinux", &value) && value == "permissive") {
         return SELINUX_PERMISSIVE;
     }
+    if (android::base::ReadFileToString("/metadata/.selinux", &value) && value == "permissive") {
+        return SELINUX_PERMISSIVE;
+    }
     return SELINUX_ENFORCING;
 }
 
