@@ -155,6 +155,7 @@
 #define AID_SDV_DT_AGENT 1100        /* Software defined vehicle data tunnel agent */
 #define AID_SDV_RPC_AGENT 1101       /* Software defined vehicle RPC agent */
 #define AID_SDV_INIT_OPEN_DICE 1102  /* Software defined vehicle init open dice driver */
+#define AID_AOAD 1103                /* Android Open Accessory daemon */
 // Additions to this file must be accompanied by updates to expect_ids() in
 // bionic/tests/grp_pwd_test.cpp.
 
