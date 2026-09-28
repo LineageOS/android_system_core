@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5145d9c7_9c41e580",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29415
+      },
+      "writtenOn": "2026-09-28T19:51:04Z",
+      "side": 1,
+      "message": "Initial concern was this would break GSI but realized modprobe is sent to /vendor, so scripts can pass -p without worrying about breaking GSI.",
+      "revId": "9961dfec135a73ab9ca9aa836d41f580053f40ad",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
