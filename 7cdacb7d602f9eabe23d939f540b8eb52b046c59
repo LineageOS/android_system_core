@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "799beaa2_65c747c1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 29415
+      },
+      "writtenOn": "2026-09-29T19:51:05Z",
+      "side": 1,
+      "message": "Think that this should still be a fixup, because the first stage handling existed prior to this change, that\u0027s how the change should be ported if it were to be merged into AOSP.\n\nSomeone reviewing @Google would prob ask, why handle perf mode there but not here?",
+      "parentUuid": "a0a22c94_5e7895c9",
+      "revId": "7cdacb7d602f9eabe23d939f540b8eb52b046c59",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "46b73074_0e4937e3",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -31,6 +49,24 @@
       "writtenOn": "2026-09-29T19:48:53Z",
       "side": 1,
       "message": "Match the same behavior as first stage ramdisk",
+      "revId": "7cdacb7d602f9eabe23d939f540b8eb52b046c59",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "480dc83f_5324cf54",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 29415
+      },
+      "writtenOn": "2026-09-29T19:51:05Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "46b73074_0e4937e3",
       "revId": "7cdacb7d602f9eabe23d939f540b8eb52b046c59",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     },
