@@ -25,6 +25,7 @@
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/macros.h>
+#include <android-base/properties.h>
 #include <android-base/strings.h>
 #include <android-base/stringprintf.h>
 #include <modprobe/modprobe.h>
@@ -306,9 +307,16 @@ extern "C" int modprobe_main(int argc, char** argv) {
 
     Modprobe m(mod_dirs, modules_load_file.empty() ? "modules.load" : modules_load_file, blocklist);
     if (mode == AddModulesMode && !modules_load_file.empty()) {
+        auto parallel_mode = Modprobe::LoadParallelMode::NORMAL;
+        auto boot_parallel_mode =
+                android::base::GetProperty("ro.boot.load_modules_parallel", "");
+        if (boot_parallel_mode == "performance")
+            parallel_mode = Modprobe::LoadParallelMode::PERFORMANCE;
+        else if (boot_parallel_mode == "conservative")
+            parallel_mode = Modprobe::LoadParallelMode::CONSERVATIVE;
+
         bool retval = (parallel) ? m.LoadModulesParallel(std::thread::hardware_concurrency(),
-                                                         Modprobe::LoadParallelMode::NORMAL,
-                                                         false)
+                                                         parallel_mode, false)
                                  : m.LoadListedModules(false);
 
         if (!retval) {
