@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a0a22c94_5e7895c9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 19979
+      },
+      "writtenOn": "2026-09-29T19:48:53Z",
+      "side": 1,
+      "message": "```suggestion\ntoolbox/modprobe: Select performance for LoadParallelMode based on bootconfig\n```",
+      "revId": "7cdacb7d602f9eabe23d939f540b8eb52b046c59",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "46b73074_0e4937e3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 19979
+      },
+      "writtenOn": "2026-09-29T19:48:53Z",
+      "side": 1,
+      "message": "Match the same behavior as first stage ramdisk",
+      "revId": "7cdacb7d602f9eabe23d939f540b8eb52b046c59",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
