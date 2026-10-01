@@ -16,6 +16,7 @@
 
 #include <ctype.h>
 #include <getopt.h>
+#include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -53,12 +54,34 @@ void print_usage(void) {
     LOG(INFO) << "  -D, --show-depends: Print dependencies for modules only, do not load";
     LOG(INFO) << "  -h, --help: Print this help";
     LOG(INFO) << "  -l, --list: List modules matching pattern";
-    LOG(INFO) << "  -p, --parallel: Load modules in parallel";
+    LOG(INFO) << "  -p, --parallel[=MODE]: Load modules in parallel";
+    LOG(INFO) << "       MODE is one of normal (default), performance, conservative";
     LOG(INFO) << "  -r, --remove: Remove MODULE (multiple modules may be specified)";
     LOG(INFO) << "  -s, --syslog: print to syslog also";
     LOG(INFO) << "  -q, --quiet: disable messages";
     LOG(INFO) << "  -v, --verbose: enable more messages, even more with a second -v";
     LOG(INFO);
+}
+
+/**
+ * Parses a -p/--parallel mode argument into a Modprobe::LoadParallelMode value.
+ * Returns -1 when the value is unrecognised so the caller can report an error.
+ */
+static int parse_parallel_mode(const char* value) {
+    if (value == nullptr || value[0] == '\0') {
+        // Empty argument means "parallel with default mode".
+        return Modprobe::LoadParallelMode::NORMAL;
+    }
+    if (!strcasecmp(value, "normal")) {
+        return Modprobe::LoadParallelMode::NORMAL;
+    }
+    if (!strcasecmp(value, "performance")) {
+        return Modprobe::LoadParallelMode::PERFORMANCE;
+    }
+    if (!strcasecmp(value, "conservative")) {
+        return Modprobe::LoadParallelMode::CONSERVATIVE;
+    }
+    return -1;
 }
 
 #define check_mode()                                   \
@@ -160,6 +183,8 @@ extern "C" int modprobe_main(int argc, char** argv) {
     std::vector<std::string> mod_dirs;
     modprobe_mode mode = AddModulesMode;
     bool blocklist = false, parallel = false;
+    // LoadParallelMode chosen by -p/--parallel; valid only when parallel is true.
+    int parallel_mode = Modprobe::LoadParallelMode::NORMAL;
     int rv = EXIT_SUCCESS;
 
     int opt, fd;
@@ -174,7 +199,7 @@ extern "C" int modprobe_main(int argc, char** argv) {
         { "show-depends",        no_argument,       0, 'D' },
         { "help",                no_argument,       0, 'h' },
         { "list",                no_argument,       0, 'l' },
-        { "parallel",            no_argument,       0, 'p' },
+        { "parallel",            optional_argument, 0, 'p' },
         { "quiet",               no_argument,       0, 'q' },
         { "remove",              no_argument,       0, 'r' },
         { "syslog",              no_argument,       0, 's' },
@@ -222,6 +247,13 @@ extern "C" int modprobe_main(int argc, char** argv) {
                 break;
             case 'p':
                 parallel = true;
+                int parsed = parse_parallel_mode(optarg);
+                if (parsed == -1) {
+                    LOG(ERROR) << "Invalid parallel mode: " << (optarg ? optarg : "<empty>");
+                    print_usage();
+                    return EXIT_FAILURE;
+                }
+                parallel_mode = parsed;
                 break;
             case 'q':
                 android::base::SetMinimumLogSeverity(android::base::WARNING);
@@ -306,10 +338,10 @@ extern "C" int modprobe_main(int argc, char** argv) {
 
     Modprobe m(mod_dirs, modules_load_file.empty() ? "modules.load" : modules_load_file, blocklist);
     if (mode == AddModulesMode && !modules_load_file.empty()) {
-        bool retval = (parallel) ? m.LoadModulesParallel(std::thread::hardware_concurrency(),
-                                                         Modprobe::LoadParallelMode::NORMAL,
-                                                         false)
-                                 : m.LoadListedModules(false);
+        bool retval = (parallel)
+                             ? m.LoadModulesParallel(std::thread::hardware_concurrency(),
+                                                    parallel_mode, false)
+                             : m.LoadListedModules(false);
 
         if (!retval) {
             PLOG(ERROR) << "Failed to load all the modules from " << modules_load_file;
