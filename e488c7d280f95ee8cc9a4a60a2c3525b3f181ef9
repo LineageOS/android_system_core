@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3cfd6a78_3bdcc3c0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2026-10-03T05:52:19Z",
+      "side": 1,
+      "message": "this is still opt-in, so seem fine.",
+      "revId": "e488c7d280f95ee8cc9a4a60a2c3525b3f181ef9",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
