@@ -18,6 +18,7 @@
 
 #include <android-base/logging.h>
 #include <android-base/stringprintf.h>
+#include <android/binder_process.h>
 #include <sparse/sparse.h>
 
 #include "fastboot_device.h"
@@ -35,6 +36,9 @@ static void LogSparseVerboseMessage(const char* fmt, ...) {
 
 int main(int /*argc*/, char* argv[]) {
     android::base::InitLogging(argv, &android::base::KernelLogger);
+
+    ABinderProcess_setThreadPoolMaxThreadCount(0);
+    ABinderProcess_startThreadPool();
 
     sparse_print_verbose = LogSparseVerboseMessage;
 
