@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bf8fa2b5_930dba50",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2026-10-05T15:34:03Z",
+      "side": 1,
+      "message": "send to AOSP in case they\u0027re in a good mood.",
+      "revId": "b1344276bd50d4ab1248d8cbc613fa2912b2d6fc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
