@@ -34,6 +34,23 @@
       "parentUuid": "bf8fa2b5_930dba50",
       "revId": "b1344276bd50d4ab1248d8cbc613fa2912b2d6fc",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b68e06d5_94953e9a",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 29415
+      },
+      "writtenOn": "2026-10-06T01:42:17Z",
+      "side": 1,
+      "message": "AOSP merged internally",
+      "revId": "b1344276bd50d4ab1248d8cbc613fa2912b2d6fc",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
