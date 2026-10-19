@@ -70,7 +70,7 @@ void SetFatalRebootTarget(const std::optional<std::string>& reboot_target) {
         // We already default to bootloader if no setting is provided.
     } else {
         const std::string kRebootTargetStringPattern = kRebootTargetString + "=";
-        start_pos += sizeof(kRebootTargetStringPattern) - 1;
+        start_pos += kRebootTargetStringPattern.size();
 
         auto end_pos = cmdline.find(' ', start_pos);
         // if end_pos isn't found, then we've run off the end, but this is okay as this is the last
