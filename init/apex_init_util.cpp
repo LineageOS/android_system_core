@@ -173,9 +173,14 @@ bool CanMountApexBeforeData() {
         return false;
     }
 
-    // For the first boot after factory reset: since there's no data apexes, init can decide by
-    //     looking up "apexd.config.compressed_apex". If there's no compressed apexes, apexd should
-    //     be able to mount apexes before data.
+    // Compressed APEXes are decompressed to /data, so they rule this out on every boot. The
+    //     marker below may have been left by an earlier build that shipped none.
+    if (base::GetBoolProperty(kCompressedApexSysprop, true)) {
+        return false;
+    }
+
+    // For the first boot after factory reset there's no data apexes, so apexd should be able to
+    //     mount apexes before data.
     //
     // Otherwise, apexd had a chance to decide whether it can mount apexes before data partition.
     //     Hence, init just looks up /metadata/apex/config/mount_before_data which is created by
@@ -185,10 +190,9 @@ bool CanMountApexBeforeData() {
     // boot.
     bool first_boot = access(kMetadataApexDir, F_OK) != 0;
     if (first_boot) {
-        return !base::GetBoolProperty(kCompressedApexSysprop, true);
-    } else {
-        return access(kMetadataApexConfigMountBeforeData, F_OK) == 0;
+        return true;
     }
+    return access(kMetadataApexConfigMountBeforeData, F_OK) == 0;
 }
 
 }  // namespace init
